@@ -5,23 +5,26 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
+import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { 
-    ProductService, 
-    FilterOptions, 
-    SortOption as ServerSortOption, 
-    PaginationOptions 
+import {
+    ProductService,
+    FilterOptions,
+    SortOption as ServerSortOption,
+    PaginationOptions,
 } from "@/services/ProductService";
 import { Product } from "@/models/Product";
 import Link from "next/link";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { Search, Heart, ShoppingCart } from "lucide-react";
+import { useWishlist } from "@/hooks/useWishlist";
+import { NavBar } from "@/components/NavBar";
+import { WishlistSidebar } from "@/components/WishlistSidebar";
 
 // Enhanced star rating component with partial stars
 const StarRating = ({ rating }: { rating: number }) => {
@@ -91,8 +94,44 @@ const StarRating = ({ rating }: { rating: number }) => {
 
 // Product card with hover effects from Aceternity UI style
 const ProductCard = ({ product }: { product: Product }) => {
+    const { toggleWishlist, isInWishlist } = useWishlist();
+    const [isWishlistAnimating, setIsWishlistAnimating] = useState(false);
+    
+    const isInWishlistState = isInWishlist(product.id);
+
+    const handleWishlistToggle = () => {
+        setIsWishlistAnimating(true);
+        toggleWishlist(product.id);
+        
+        // Reset animation state
+        setTimeout(() => setIsWishlistAnimating(false), 300);
+    };
+
+    const handleAddToCart = () => {
+        // TODO: Implement cart functionality
+        console.log(`Adding ${product.name} to cart`);
+    };
+
     return (
         <div className="group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl dark:bg-gray-900">
+            {/* Wishlist button - always visible */}
+            <button
+                onClick={handleWishlistToggle}
+                className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all duration-300 ${
+                    isWishlistAnimating ? 'scale-125' : 'scale-100'
+                } ${
+                    isInWishlistState 
+                        ? 'bg-red-500 text-white shadow-lg' 
+                        : 'bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800 hover:text-red-500'
+                } backdrop-blur-sm hover:scale-110`}
+            >
+                <Heart 
+                    className={`h-4 w-4 transition-all duration-200 ${
+                        isInWishlistState ? 'fill-current' : ''
+                    }`} 
+                />
+            </button>
+
             <div className="aspect-square overflow-hidden">
                 <div className="relative h-full w-full transition-transform group-hover:scale-110">
                     <Image
@@ -127,29 +166,30 @@ const ProductCard = ({ product }: { product: Product }) => {
                     </div>
                 </div>
             </div>
+            
+            {/* Action buttons on hover */}
             <div className="absolute bottom-0 left-0 right-0 translate-y-full bg-black bg-opacity-75 p-4 transition-transform group-hover:translate-y-0">
-                <button
-                    className="w-full rounded-lg bg-white px-4 py-2 font-medium text-gray-900 hover:bg-gray-100 flex items-center justify-center gap-2"
-                    disabled={!product.isInStock()}
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-shopping-cart"
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={!product.isInStock()}
+                        className="flex-1 rounded-lg bg-white px-4 py-2 font-medium text-gray-900 hover:bg-gray-100 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                        <circle cx="8" cy="21" r="1" />
-                        <circle cx="19" cy="21" r="1" />
-                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                    </svg>
-                    {product.isInStock() ? "Add to Cart" : "Out of Stock"}
-                </button>
+                        <ShoppingCart className="h-4 w-4" />
+                        {product.isInStock() ? "Add to Cart" : "Out of Stock"}
+                    </button>
+                    <button
+                        onClick={handleWishlistToggle}
+                        className={`px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
+                            isInWishlistState
+                                ? "bg-red-500 text-white hover:bg-red-600"
+                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                        }`}
+                    >
+                        <Heart className={`h-4 w-4 ${isInWishlistState ? 'fill-current' : ''}`} />
+                        {isInWishlistState ? "Remove" : "Wishlist"}
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -363,7 +403,7 @@ const Pagination = ({
     const getPageNumbers = () => {
         const pages = [];
         const maxPagesToShow = 5;
-        
+
         if (totalPages <= maxPagesToShow) {
             // Show all pages if there are few enough
             for (let i = 1; i <= totalPages; i++) {
@@ -372,31 +412,31 @@ const Pagination = ({
         } else {
             // Always include first and last page
             pages.push(1);
-            
+
             // Calculate range around current page
             const leftSide = Math.max(2, currentPage - 1);
             const rightSide = Math.min(totalPages - 1, currentPage + 1);
-            
+
             // Add ellipsis if needed
             if (leftSide > 2) pages.push(-1); // -1 represents ellipsis
-            
+
             // Add pages around current page
             for (let i = leftSide; i <= rightSide; i++) {
                 pages.push(i);
             }
-            
+
             // Add ellipsis if needed
             if (rightSide < totalPages - 1) pages.push(-1);
-            
+
             // Add last page
             if (totalPages > 1) pages.push(totalPages);
         }
-        
+
         return pages;
     };
-    
+
     const pageNumbers = getPageNumbers();
-    
+
     return (
         <div className="flex items-center justify-center space-x-2">
             {/* Previous page button */}
@@ -422,7 +462,7 @@ const Pagination = ({
                     />
                 </svg>
             </button>
-            
+
             {/* Page numbers */}
             {pageNumbers.map((pageNumber, index) => {
                 if (pageNumber === -1) {
@@ -436,7 +476,7 @@ const Pagination = ({
                         </span>
                     );
                 }
-                
+
                 return (
                     <button
                         key={pageNumber}
@@ -451,7 +491,7 @@ const Pagination = ({
                     </button>
                 );
             })}
-            
+
             {/* Next page button */}
             <button
                 onClick={() => onPageChange(currentPage + 1)}
@@ -486,7 +526,7 @@ export default function ShopPage() {
     const [categories, setCategories] = useState<string[]>([]);
     const [totalProducts, setTotalProducts] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(1);
-    
+
     // Filter, sort, and pagination state
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -496,6 +536,9 @@ export default function ShopPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(9); // Number of products per page
     const [showFilters, setShowFilters] = useState(false);
+
+    // Wishlist sidebar state
+    const [isWishlistOpen, setIsWishlistOpen] = useState(false);
 
     // Track the min and max prices for the price filter component
     const [minPossiblePrice, setMinPossiblePrice] = useState(0);
@@ -513,26 +556,27 @@ export default function ShopPage() {
     // Initialize product data
     useEffect(() => {
         const productService = ProductService.getInstance();
-        
+
         // Get categories for filter
         const allCategories = productService.getCategories();
         setCategories(allCategories);
-        
+
         // Set initial price range based on product data
         const { min, max } = productService.getPriceRange();
         setMinPossiblePrice(min);
         setMaxPossiblePrice(max);
         setPriceRange([min, max]);
-        
+
         // Fetch initial products
         loadProducts();
     }, []);
-    
+
     // Prepare filter options
     const prepareFilterOptions = (): FilterOptions => {
         return {
             searchQuery: searchQuery || undefined,
-            categories: selectedCategories.length > 0 ? selectedCategories : undefined,
+            categories:
+                selectedCategories.length > 0 ? selectedCategories : undefined,
             minPrice: priceRange[0],
             maxPrice: priceRange[1],
             minRating: minRating || undefined,
@@ -545,10 +589,10 @@ export default function ShopPage() {
             // "All Categories" selected - clear all selections
             setSelectedCategories([]);
         } else {
-            setSelectedCategories(prev => {
+            setSelectedCategories((prev) => {
                 if (prev.includes(category)) {
                     // Remove category if already selected
-                    return prev.filter(c => c !== category);
+                    return prev.filter((c) => c !== category);
                 } else {
                     // Add category if not selected
                     return [...prev, category];
@@ -556,31 +600,31 @@ export default function ShopPage() {
             });
         }
     };
-    
+
     // Load products with current filter, sort, and pagination options
     const loadProducts = () => {
         const productService = ProductService.getInstance();
-        
+
         // Prepare filter, sort, and pagination options
         const filterOptions = prepareFilterOptions();
         const paginationOptions: PaginationOptions = {
             page: currentPage,
             pageSize: pageSize,
         };
-        
+
         // Get products with all options
         const result = productService.getProducts(
             filterOptions,
             sortOption,
             paginationOptions
         );
-        
+
         // Update state with results
         setProducts(result.products);
         setTotalProducts(result.totalCount);
         setTotalPages(result.totalPages);
     };
-    
+
     // Reload products when filter, sort, or pagination changes
     useEffect(() => {
         // Reset to first page when filters change
@@ -590,19 +634,19 @@ export default function ShopPage() {
             loadProducts();
         }
     }, [searchQuery, selectedCategories, sortOption, priceRange, minRating]);
-    
+
     // Reload products when page changes
     useEffect(() => {
         loadProducts();
     }, [currentPage]);
-    
+
     // Handle page change
     const handlePageChange = (page: number) => {
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
-    
+
     // Reset all filters
     const resetFilters = () => {
         setSearchQuery("");
@@ -614,17 +658,20 @@ export default function ShopPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12">
-            <div className="container mx-auto px-4">
-                <header className="mb-8 text-center">
-                    <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        Browse Our Products
-                    </h1>
-                    <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
-                        Discover our curated selection of high-quality products
-                    </p>
-                </header>
-
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+            <NavBar onWishlistToggle={() => setIsWishlistOpen(!isWishlistOpen)} />
+            
+            <div className="py-12">
+                <div className="container mx-auto px-4">
+                    <header className="mb-8 text-center">
+                        <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            Browse Our Products
+                        </h1>
+                        <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
+                            Discover our curated selection of high-quality products
+                        </p>
+                    </header>
+                
                 {/* Search bar at the top */}
                 <div className="mb-8 w-full">
                     <SearchInput
@@ -699,7 +746,8 @@ export default function ShopPage() {
                     <div className="w-full lg:w-3/4">
                         <div className="flex justify-between items-center mb-4">
                             <div className="text-sm text-gray-600 dark:text-gray-400">
-                                Showing {products.length} of {totalProducts} products
+                                Showing {products.length} of {totalProducts}{" "}
+                                products
                             </div>
 
                             <div className="lg:hidden">
@@ -780,7 +828,7 @@ export default function ShopPage() {
                                         />
                                     ))}
                                 </div>
-                                
+
                                 {/* Pagination */}
                                 {totalPages > 1 && (
                                     <div className="mt-8">
@@ -824,8 +872,14 @@ export default function ShopPage() {
                             </div>
                         )}
                     </div>
-                </div>
+                </div></div>
             </div>
+            
+            {/* Wishlist Sidebar */}
+            <WishlistSidebar 
+                isOpen={isWishlistOpen} 
+                onClose={() => setIsWishlistOpen(false)} 
+            />
         </div>
     );
 }

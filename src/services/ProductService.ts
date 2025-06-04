@@ -431,8 +431,8 @@ export class ProductService {
                     (product) => product.category === filter.category
                 );
             } else if (filter.categories && filter.categories.length > 0) {
-                filteredProducts = filteredProducts.filter(
-                    (product) => filter.categories!.includes(product.category)
+                filteredProducts = filteredProducts.filter((product) =>
+                    filter.categories!.includes(product.category)
                 );
             }
 
@@ -536,7 +536,7 @@ export class ProductService {
     public getPriceRange(): { min: number; max: number } {
         const prices = this.products.map((p) => p.price);
         return {
-            min: Math.min(...prices,0),
+            min: Math.min(...prices, 0),
             max: Math.max(...prices),
         };
     }
