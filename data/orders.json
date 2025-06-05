@@ -43,5 +43,20 @@
       }
     ],
     "total_price": 399.0
+  },
+  {
+    "order_id": "ad0cac8a-e76d-4031-824a-e60aa1f0a1c7",
+    "user_id": "Tasnuma",
+    "items": [
+      {
+        "id": "4",
+        "name": "Minimalist Desk Lamp",
+        "category": "Home",
+        "price": 59.99,
+        "quantity": 2,
+        "total_price": 119.98
+      }
+    ],
+    "total_price": 119.98
   }
 ]
