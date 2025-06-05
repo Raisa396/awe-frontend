@@ -1,0 +1,122 @@
+[
+  {
+    "order_id": "d1eadf4c-9fb1-45a5-a861-ec1a1c8678ba",
+    "user_id": "Anon",
+    "items": [
+      {
+        "id": "2",
+        "name": "Wireless Noise-Cancelling Headphones",
+        "category": "Electronics",
+        "price": 129.99,
+        "quantity": 4,
+        "total_price": 519.96
+      }
+    ],
+    "total_price": 519.96
+  },
+  {
+    "order_id": "d506f2bc-4348-4a20-80ca-79ee1936187e",
+    "user_id": "uu",
+    "items": [
+      {
+        "id": "1",
+        "name": "Modern Ergonomic Chair",
+        "category": "Furniture",
+        "price": 149.99,
+        "quantity": 3,
+        "total_price": 449.97
+      }
+    ],
+    "total_price": 449.97
+  },
+  {
+    "order_id": "44ef72b0-f2b2-4b3a-b458-963d3b7a19f1",
+    "user_id": "Arpa",
+    "items": [
+      {
+        "id": "23",
+        "name": "Digital Drawing Tablet",
+        "category": "Electronics",
+        "price": 199.5,
+        "quantity": 2,
+        "total_price": 399.0
+      }
+    ],
+    "total_price": 399.0
+  },
+  {
+    "order_id": "ad0cac8a-e76d-4031-824a-e60aa1f0a1c7",
+    "user_id": "Tasnuma",
+    "items": [
+      {
+        "id": "4",
+        "name": "Minimalist Desk Lamp",
+        "category": "Home",
+        "price": 59.99,
+        "quantity": 2,
+        "total_price": 119.98
+      }
+    ],
+    "total_price": 119.98
+  },
+  {
+    "order_id": "9c5bfe94-713f-4485-a554-a2cfb50c2704",
+    "user_id": "Shanto",
+    "items": [
+      {
+        "id": "2",
+        "name": "Wireless Noise-Cancelling Headphones",
+        "category": "Electronics",
+        "price": 129.99,
+        "quantity": 2,
+        "total_price": 259.98
+      }
+    ],
+    "total_price": 259.98
+  },
+  {
+    "order_id": "aad707c5-b9f6-4d2a-8b66-db4932d71419",
+    "user_id": "Tasmiya",
+    "items": [
+      {
+        "id": "3",
+        "name": "Smart Fitness Watch",
+        "category": "Electronics",
+        "price": 129.99,
+        "quantity": 2,
+        "total_price": 259.98
+      }
+    ],
+    "total_price": 259.98
+  },
+  {
+    "order_id": "432a1929-d2ac-4db4-aaee-3e9886f20cc0",
+    "user_id": "tutul",
+    "items": [
+      {
+        "id": "9",
+        "name": "Handcrafted Wooden Cutting Board",
+        "category": "Kitchen",
+        "price": 45.99,
+        "quantity": 2,
+        "total_price": 91.98
+      }
+    ],
+    "total_price": 91.98
+  },
+  {
+    "order_id": "66d49611-5cd3-410a-b08f-5b5a4a3f7283",
+    "user_id": "Anzor",
+    "items": [
+      {
+        "id": "7",
+        "name": "Stainless Steel Water Bottle",
+        "category": "Kitchen",
+        "price": 34.99,
+        "quantity": 3,
+        "total_price": 104.97
+      }
+    ],
+    "total_price": 104.97
+  }
+]

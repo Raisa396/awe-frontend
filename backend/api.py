@@ -1,0 +1,47 @@
+from flask import Flask, jsonify, request
+from services.product_service import get_all_products, search_products
+from services.cart_service import get_cart, add_to_cart
+from services.wishlist_service import get_wishlist, add_to_wishlist
+from services.order_service import place_order
+
+from flask_cors import CORS
+app = Flask(__name__)
+CORS(app)
+
+
+@app.route("/products")
+def products():
+    return jsonify(get_all_products())
+
+@app.route("/search")
+def search():
+    keyword = request.args.get("q", "")
+    return jsonify(search_products(keyword))
+
+@app.route("/cart/<user_id>")
+def cart(user_id):
+    return jsonify(get_cart(user_id))
+
+@app.route("/cart/<user_id>/add", methods=["POST"])
+def cart_add(user_id):
+    product = request.json
+    add_to_cart(user_id, product)
+    return jsonify({"status": "added"})
+
+@app.route("/wishlist/<user_id>")
+def wishlist(user_id):
+    return jsonify(get_wishlist(user_id))
+
+@app.route("/wishlist/<user_id>/add", methods=["POST"])
+def wishlist_add(user_id):
+    product = request.json
+    add_to_wishlist(user_id, product)
+    return jsonify({"status": "added"})
+
+@app.route("/order/<user_id>", methods=["POST"])
+def order(user_id):
+    result = place_order(user_id)
+    return jsonify(result if result else {"status": "cart empty"})
+
+if __name__ == "__main__":
+    app.run(debug=True)
