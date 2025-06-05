@@ -1,12 +1,25 @@
 import { Heart, ShoppingCart } from "lucide-react";
-import { useWishlist } from "@/hooks/useWishlist";
+import { WishlistService } from "@/services/WishlistService";
+import { useState, useEffect } from "react";
 
 interface NavBarProps {
     onWishlistToggle: () => void;
 }
 
 export const NavBar = ({ onWishlistToggle }: NavBarProps) => {
-    const { wishlistCount } = useWishlist();
+    const [wishlistCount, setWishlistCount] = useState(0);
+    const wishlistService = WishlistService.getInstance();
+
+    // Update wishlist count on mount and subscribe to changes
+    useEffect(() => {
+        setWishlistCount(wishlistService.getWishlistCount());
+
+        const unsubscribe = wishlistService.subscribe(() => {
+            setWishlistCount(wishlistService.getWishlistCount());
+        });
+
+        return unsubscribe;
+    }, [wishlistService]);
 
     return (
         <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">

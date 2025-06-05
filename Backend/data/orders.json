@@ -1,0 +1,17 @@
+[
+  {
+    "order_id": "d1eadf4c-9fb1-45a5-a861-ec1a1c8678ba",
+    "user_id": "Anon",
+    "items": [
+      {
+        "id": "2",
+        "name": "Wireless Noise-Cancelling Headphones",
+        "category": "Electronics",
+        "price": 129.99,
+        "quantity": 4,
+        "total_price": 519.96
+      }
+    ],
+    "total_price": 519.96
+  }
+]
