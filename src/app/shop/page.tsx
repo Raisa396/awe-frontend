@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-
+import { CartService } from "@/services/CartService";
+import { CartItem } from "@/models/CartItem";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -90,7 +91,13 @@ const StarRating = ({ rating }: { rating: number }) => {
 };
 
 // Product card with hover effects from Aceternity UI style
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({
+    product,
+    onAddToCart,
+    }: {
+    product: Product;
+    onAddToCart: (product: Product) => void;
+    }) =>  {
     return (
         <div className="group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl dark:bg-gray-900">
             <div className="aspect-square overflow-hidden">
@@ -130,7 +137,8 @@ const ProductCard = ({ product }: { product: Product }) => {
             <div className="absolute bottom-0 left-0 right-0 translate-y-full bg-black bg-opacity-75 p-4 transition-transform group-hover:translate-y-0">
                 <button
                     className="w-full rounded-lg bg-white px-4 py-2 font-medium text-gray-900 hover:bg-gray-100 flex items-center justify-center gap-2"
-                    disabled={!product.isInStock()}
+                    disabled={!product.isInStock() }
+                    onClick={() => onAddToCart(product)}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -479,6 +487,20 @@ const Pagination = ({
     );
 };
 
+// Add to Cart handler — adds selected product to localStorage cart
+const handleAddToCart = (product: Product) => {
+    const item = {
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        imageUrl: product.image,
+    };
+
+    CartService.addToCart(item);
+    alert(`${product.name} added to cart`);
+};
+
 // Main shop page component
 export default function ShopPage() {
     // Products and filtering state
@@ -777,6 +799,7 @@ export default function ShopPage() {
                                         <ProductCard
                                             key={product.id}
                                             product={product}
+                                            onAddToCart={handleAddToCart}
                                         />
                                     ))}
                                 </div>
