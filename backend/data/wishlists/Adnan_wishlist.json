@@ -1,0 +1,12 @@
+[
+  {
+    "id": "3",
+    "name": "Smart Fitness Watch",
+    "description": "Track your workouts, heart rate, sleep quality and more with this advanced fitness tracker",
+    "price": 129.99,
+    "category": "Electronics",
+    "image": "https:",
+    "rating": 4.3,
+    "stock": 24
+  }
+]

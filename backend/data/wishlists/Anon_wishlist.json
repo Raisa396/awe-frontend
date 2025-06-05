@@ -1,0 +1,12 @@
+[
+  {
+    "id": "10",
+    "name": "Vintage Style Record Player",
+    "description": "Bluetooth-enabled record player with built-in speakers and USB recording",
+    "price": 129.99,
+    "category": "Electronics",
+    "image": "https:",
+    "rating": 2.8,
+    "stock": 7
+  }
+]

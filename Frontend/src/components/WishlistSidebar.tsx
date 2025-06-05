@@ -1,5 +1,6 @@
 import { X, Heart, ShoppingCart, Trash2 } from "lucide-react";
-import { useWishlist } from "@/hooks/useWishlist";
+import { WishlistService } from "@/services/WishlistService";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Product } from "@/models/Product";
 
@@ -9,21 +10,21 @@ interface WishlistSidebarProps {
 }
 
 const WishlistProductCard = ({ product }: { product: Product }) => {
-    const { removeFromWishlist } = useWishlist();
+    const wishlistService = WishlistService.getInstance();
 
     const handleRemove = () => {
-        removeFromWishlist(product.id);
+        wishlistService.removeFromWishlist(product.id);
     };
 
     const handleMoveToCart = () => {
         // TODO: Implement cart functionality
         console.log(`Moving ${product.name} to cart`);
         // For now, remove from wishlist
-        removeFromWishlist(product.id);
+        wishlistService.removeFromWishlist(product.id);
     };
 
     return (
-        <div className="flex gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+        <div className="relative flex gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg group hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
             {/* Product Image */}
             <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                 <Image
@@ -54,22 +55,22 @@ const WishlistProductCard = ({ product }: { product: Product }) => {
                 </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Action Buttons - positioned at top right */}
+            <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                     onClick={handleMoveToCart}
                     disabled={!product.isInStock()}
-                    className="p-1.5 rounded-md bg-black text-white hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    className="p-2 rounded-md bg-black text-white hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors shadow-lg"
                     title="Move to cart"
                 >
-                    <ShoppingCart className="h-3 w-3" />
+                    <ShoppingCart className="h-4 w-4" />
                 </button>
                 <button
                     onClick={handleRemove}
-                    className="p-1.5 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors"
+                    className="p-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors shadow-lg"
                     title="Remove from wishlist"
                 >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-4 w-4" />
                 </button>
             </div>
         </div>
@@ -77,7 +78,38 @@ const WishlistProductCard = ({ product }: { product: Product }) => {
 };
 
 export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
-    const { wishlistProducts, wishlistCount, clearWishlist, moveAllToCart } = useWishlist();
+    const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
+    const [wishlistCount, setWishlistCount] = useState(0);
+    const wishlistService = WishlistService.getInstance();
+
+    // Load wishlist products and subscribe to changes
+    useEffect(() => {
+        const loadWishlistProducts = async () => {
+            const products = await wishlistService.getWishlistProducts();
+            setWishlistProducts(products);
+            setWishlistCount(wishlistService.getWishlistCount());
+        };
+
+        loadWishlistProducts();
+
+        const unsubscribe = wishlistService.subscribe(async () => {
+            const products = await wishlistService.getWishlistProducts();
+            setWishlistProducts(products);
+            setWishlistCount(wishlistService.getWishlistCount());
+        });
+
+        return unsubscribe;
+    }, [wishlistService]);
+
+    const handleClearWishlist = () => {
+        wishlistService.clearWishlist();
+    };
+
+    const handleMoveAllToCart = () => {
+        // TODO: Implement cart functionality
+        console.log("Moving all items to cart");
+        wishlistService.clearWishlist();
+    };
 
     return (
         <>
@@ -91,7 +123,7 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
 
             {/* Sidebar */}
             <div
-                className={`fixed top-0 right-0 h-full w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 z-50 transform transition-transform duration-300 ease-in-out ${
+                className={`fixed top-0 right-0 h-full w-100 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 z-50 transform transition-transform duration-300 ease-in-out ${
                     isOpen ? "translate-x-0" : "translate-x-full"
                 }`}
             >
@@ -117,16 +149,16 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
                         <>
                             {/* Action Buttons */}
                             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                                <div className="flex gap-2">
+                                <div className="flex gap-4">
                                     <button
-                                        onClick={moveAllToCart}
+                                        onClick={handleMoveAllToCart}
                                         className="flex-1 px-3 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium flex items-center justify-center gap-2"
                                     >
                                         <ShoppingCart className="h-4 w-4" />
                                         Move All to Cart
                                     </button>
                                     <button
-                                        onClick={clearWishlist}
+                                        onClick={handleClearWishlist}
                                         className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
                                     >
                                         Clear All

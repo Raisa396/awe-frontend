@@ -22,7 +22,7 @@ import { Product } from "@/models/Product";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, Heart, ShoppingCart } from "lucide-react";
-import { useWishlist } from "@/hooks/useWishlist";
+import { WishlistService } from "@/services/WishlistService";
 import { NavBar } from "@/components/NavBar";
 import { WishlistSidebar } from "@/components/WishlistSidebar";
 
@@ -94,14 +94,31 @@ const StarRating = ({ rating }: { rating: number }) => {
 
 // Product card with hover effects from Aceternity UI style
 const ProductCard = ({ product }: { product: Product }) => {
-    const { toggleWishlist, isInWishlist } = useWishlist();
+    const [isInWishlist, setIsInWishlist] = useState(false);
     const [isWishlistAnimating, setIsWishlistAnimating] = useState(false);
-    
-    const isInWishlistState = isInWishlist(product.id);
+    const wishlistService = WishlistService.getInstance();
+
+    // Check wishlist status on mount and subscribe to changes
+    useEffect(() => {
+        setIsInWishlist(wishlistService.isInWishlist(product.id));
+
+        const unsubscribe = wishlistService.subscribe((event) => {
+            if (event.productId === product.id) {
+                setIsInWishlist(wishlistService.isInWishlist(product.id));
+            }
+        });
+
+        return unsubscribe;
+    }, [product.id, wishlistService]);
 
     const handleWishlistToggle = () => {
         setIsWishlistAnimating(true);
-        toggleWishlist(product.id);
+        
+        if (isInWishlist) {
+            wishlistService.removeFromWishlist(product.id);
+        } else {
+            wishlistService.addToWishlist(product.id);
+        }
         
         // Reset animation state
         setTimeout(() => setIsWishlistAnimating(false), 300);
@@ -114,24 +131,6 @@ const ProductCard = ({ product }: { product: Product }) => {
 
     return (
         <div className="group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl dark:bg-gray-900">
-            {/* Wishlist button - always visible */}
-            <button
-                onClick={handleWishlistToggle}
-                className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all duration-300 ${
-                    isWishlistAnimating ? 'scale-125' : 'scale-100'
-                } ${
-                    isInWishlistState 
-                        ? 'bg-red-500 text-white shadow-lg' 
-                        : 'bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800 hover:text-red-500'
-                } backdrop-blur-sm hover:scale-110`}
-            >
-                <Heart 
-                    className={`h-4 w-4 transition-all duration-200 ${
-                        isInWishlistState ? 'fill-current' : ''
-                    }`} 
-                />
-            </button>
-
             <div className="aspect-square overflow-hidden">
                 <div className="relative h-full w-full transition-transform group-hover:scale-110">
                     <Image
@@ -142,8 +141,40 @@ const ProductCard = ({ product }: { product: Product }) => {
                     />
                 </div>
             </div>
+            
+            {/* Gradient overlay on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
-            <div className="p-4">
+            
+            {/* Action buttons that appear on hover */}
+            <div className="absolute top-10 right-[2px] transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-3">
+                <button
+                    onClick={handleWishlistToggle}
+                    className={`p-3 rounded-full transition-all duration-300 ${
+                        isWishlistAnimating ? 'scale-125' : 'scale-100'
+                    } ${
+                        isInWishlist 
+                            ? 'bg-red-500 text-white shadow-lg' 
+                            : 'bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:text-red-500'
+                    } backdrop-blur-sm hover:scale-110 shadow-lg`}
+                >
+                    <Heart 
+                        className={`h-5 w-5 transition-all duration-200 ${
+                            isInWishlist ? 'fill-current' : ''
+                        }`} 
+                    />
+                </button>
+                
+                <button
+                    onClick={handleAddToCart}
+                    disabled={!product.isInStock()}
+                    className="p-3 rounded-full bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:text-blue-500 backdrop-blur-sm hover:scale-110 shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <ShoppingCart className="h-5 w-5" />
+                </button>
+            </div>
+            
+            {/* Product info - elevated on hover */}
+            <div className="p-4 transition-transform duration-300 group-hover:-translate-y-2">
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 truncate h-6">
                     {product.name}
                 </h3>
@@ -164,31 +195,6 @@ const ProductCard = ({ product }: { product: Product }) => {
                             {product.isInStock() ? "In stock" : "Out of stock"}
                         </span>
                     </div>
-                </div>
-            </div>
-            
-            {/* Action buttons on hover */}
-            <div className="absolute bottom-0 left-0 right-0 translate-y-full bg-black bg-opacity-75 p-4 transition-transform group-hover:translate-y-0">
-                <div className="flex gap-2">
-                    <button
-                        onClick={handleAddToCart}
-                        disabled={!product.isInStock()}
-                        className="flex-1 rounded-lg bg-white px-4 py-2 font-medium text-gray-900 hover:bg-gray-100 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                        <ShoppingCart className="h-4 w-4" />
-                        {product.isInStock() ? "Add to Cart" : "Out of Stock"}
-                    </button>
-                    <button
-                        onClick={handleWishlistToggle}
-                        className={`px-4 py-2 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
-                            isInWishlistState
-                                ? "bg-red-500 text-white hover:bg-red-600"
-                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        }`}
-                    >
-                        <Heart className={`h-4 w-4 ${isInWishlistState ? 'fill-current' : ''}`} />
-                        {isInWishlistState ? "Remove" : "Wishlist"}
-                    </button>
                 </div>
             </div>
         </div>
