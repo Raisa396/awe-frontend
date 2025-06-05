@@ -13,5 +13,20 @@
       }
     ],
     "total_price": 519.96
+  },
+  {
+    "order_id": "d506f2bc-4348-4a20-80ca-79ee1936187e",
+    "user_id": "uu",
+    "items": [
+      {
+        "id": "1",
+        "name": "Modern Ergonomic Chair",
+        "category": "Furniture",
+        "price": 149.99,
+        "quantity": 3,
+        "total_price": 449.97
+      }
+    ],
+    "total_price": 449.97
   }
 ]
