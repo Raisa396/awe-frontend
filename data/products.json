@@ -1,0 +1,292 @@
+[
+    {
+        "id": "1",
+        "name": "Modern Ergonomic Chair",
+        "description": "High-quality ergonomic office chair with lumbar support and adjustable height",
+        "price": 149.99,
+        "category": "Furniture",
+        "image": "https:",
+        "rating": 4.5,
+        "stock": 15
+    },
+    {
+        "id": "2",
+        "name": "Wireless Noise-Cancelling Headphones",
+        "description": "Premium wireless headphones with active noise cancellation and 30-hour battery life",
+        "price":129.99,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 4.8,
+        "stock": 0
+    },
+    {
+        "id": "3",
+        "name": "Smart Fitness Watch",
+        "description": "Track your workouts, heart rate, sleep quality and more with this advanced fitness tracker",
+        "price": 129.99,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 4.3,
+        "stock": 24
+    },
+    {
+        "id": "4",
+        "name": "Minimalist Desk Lamp",
+        "description": "Modern LED desk lamp with adjustable brightness and color temperature",
+        "price": 59.99,
+        "category": "Home",
+        "image": "https:",
+        "rating": 4.1,
+        "stock": 32
+    },
+    {
+        "id": "5",
+        "name": "Organic Cotton T-Shirt",
+        "description": "Soft, breathable 100% organic cotton t-shirt in a relaxed fit",
+        "price": 29.99,
+        "category": "Clothing",
+        "image": "https:",
+        "rating": 4.4,
+        "stock": 0
+    },
+    {
+        "id": "6",
+        "name": "Smart Home Security Camera with Advanced Motion Detection Technology",
+        "description": "HD security camera with motion detection, night vision, and smartphone integration",
+        "price": 89.99,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 4.2,
+        "stock": 17
+    },
+    {
+        "id": "7",
+        "name": "Stainless Steel Water Bottle",
+        "description": "Vacuum-insulated bottle that keeps drinks cold for 24 hours or hot for 12 hours",
+        "price": 34.99,
+        "category": "Kitchen",
+        "image": "https:",
+        "rating": 4.7,
+        "stock": 42
+    },
+    {
+        "id": "8",
+        "name": "Ceramic Plant Pot",
+        "description": "Minimalist ceramic pot perfect for indoor plants and succulents",
+        "price": 24.99,
+        "category": "Home",
+        "image": "https:",
+        "rating": 4.0,
+        "stock": 29
+    },
+    {
+        "id": "9",
+        "name": "Handcrafted Wooden Cutting Board",
+        "description": "Premium acacia wood cutting board with juice grooves and handle",
+        "price": 45.99,
+        "category": "Kitchen",
+        "image": "https:",
+        "rating": 3.5,
+        "stock": 18
+    },
+    {
+        "id": "10",
+        "name": "Vintage Style Record Player",
+        "description": "Bluetooth-enabled record player with built-in speakers and USB recording",
+        "price": 129.99,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 2.8,
+        "stock": 7
+    },
+    {
+        "id": "11",
+        "name": "Professional Art Pencil Set",
+        "description": "Set of 24 artist-grade colored pencils in a metal case",
+        "price": 19.99,
+        "category": "Art Supplies",
+        "image": "https:",
+        "rating": 5.0,
+        "stock": 31
+    },
+    {
+        "id": "12",
+        "name": "Natural Bamboo Bath Mat",
+        "description": "Eco-friendly non-slip bamboo bath mat with water-resistant finish",
+        "price": 38.5,
+        "category": "Home",
+        "image": "https:",
+        "rating": 3.9,
+        "stock": 0
+    },
+    {
+        "id": "13",
+        "name": "Leather Bound Journal",
+        "description": "Handmade leather journal with recycled paper pages and bookmark",
+        "price": 27.99,
+        "category": "Stationery",
+        "image": "https:",
+        "rating": 4.2,
+        "stock": 22
+    },
+    {
+        "id": "14",
+        "name": "Smart Wi-Fi Light Bulbs",
+        "description": "Color-changing LED bulbs controllable via smartphone app or voice assistant",
+        "price": 49.99,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 2.5,
+        "stock": 47
+    },
+    {
+        "id": "15",
+        "name": "Minimalist Wall Clock",
+        "description": "Modern silent wall clock with Scandinavian design",
+        "price": 32.5,
+        "category": "Home",
+        "image": "https:",
+        "rating": 3.7,
+        "stock": 19
+    },
+    {
+        "id": "17",
+        "name": "Portable Bluetooth Speaker",
+        "description": "Waterproof speaker with 20-hour battery life and rich bass",
+        "price": 79.99,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 3.2,
+        "stock": 14
+    },
+    {
+        "id": "18",
+        "name": "Yoga Mat with Alignment Lines",
+        "description": "Non-slip eco-friendly yoga mat with position guide marks",
+        "price": 42.5,
+        "category": "Fitness",
+        "image": "https:",
+        "rating": 4.6,
+        "stock": 25
+    },
+    {
+        "id": "19",
+        "name": "Compact Mechanical Keyboard",
+        "description": "Tactile mechanical keyboard with RGB backlighting and programmable keys",
+        "price": 119.99,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 4.0,
+        "stock": 0
+    },
+    {
+        "id": "20",
+       "name": "Wool Knit Sweater",
+        "description": "Soft, warm sweater made from 100% merino wool in classic style",
+        "price": 65.5,
+        "category": "Clothing",
+        "image": "https:",
+        "rating":3.8,
+        "stock": 12
+    },
+    {
+        "id": "21",
+        "name": "Handmade Ceramic Mug Set",
+        "description": "Set of 4 artisan mugs with unique glazing patterns",
+        "price": 36.99,
+        "category": "Kitchen",
+        "image": "https:",
+        "rating": 4.7,
+        "stock": 19
+    },
+    {
+        "id": "22",
+        "name": "Lightweight Hiking Backpack",
+        "description": "Durable 30L backpack with hydration system compatibility",
+        "price": 89.95,
+        "category": "Outdoor",
+        "image": "https:",
+        "rating": 2.9,
+        "stock": 8
+    },
+    {
+        "id": "23",
+        "name": "Digital Drawing Tablet",
+        "description": "Pressure-sensitive tablet for digital artists with wireless connectivity",
+        "price": 199.5,
+        "category": "Electronics",
+        "image": "https:",
+        "rating": 4.5,
+        "stock": 0
+    },
+    {
+        "id": "24",
+        "name": "Premium Loose Leaf Tea Collection",
+        "description": "Six varieties of organic loose leaf tea in reusable tins",
+        "price": 32.99,
+        "category": "Food & Beverage",
+        "image": "https:",
+        "rating": 3.3,
+        "stock": 27
+    },
+    {
+        "id": "25",
+        "name": "Minimalist Desk Organizer",
+        "description": "Bamboo desk organizer with multiple compartments and device stand",
+        "price": 45.0,
+        "category": "Office",
+        "image": "https:",
+        "rating": 4.4,
+        "stock": 33
+    },
+    {
+        "id": "26",
+        "name": "Adjustable Dumbbell Set",
+        "description": "Space-saving dumbbell set with adjustable weights from 5-25 pounds each",
+        "price": 249.99,
+        "category": "Fitness",
+        "image": "https:",
+        "rating": 1.7,
+        "stock": 5
+    },
+    {
+        "id": "27",
+        "name": "Handwoven Throw Blanket",
+        "description": "Soft cotton throw blanket with geometric patterns and fringed edges",
+        "price": 59.95,
+        "category": "Home",
+        "image": "https:",
+        "rating": 2.0,
+        "stock": 14
+    },
+    {
+        "id": "28",
+        "name": "Stainless Steel Cocktail Set",
+        "description": "Complete bartending kit with shaker, jigger, strainer, and recipe book",
+        "price": 75.0,
+        "category": "Kitchen",
+        "image": "https:",
+        "rating": 3.9,
+        "stock": 21
+    },
+    {
+        "id": "29",
+        "name": "Compact Air Purifier",
+        "description": "HEPA air purifier ideal for bedrooms and small spaces with quiet operation",
+        "price": 129.95,
+        "category": "Home",
+        "image": "https:",
+        "rating": 4.1,
+        "stock": 9
+    },
+    {
+        "id": "30",
+        "name": "Wooden Chess Set",
+        "description": "Handcrafted wooden chess set with felt-lined storage box",
+        "price": 89.99,
+        "category": "Games",
+        "image": "https:",
+        "rating": 2.2,
+        "stock": 0
+    }
+]

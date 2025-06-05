@@ -1,0 +1,12 @@
+[
+  {
+    "id": "2",
+    "name": "Wireless Noise-Cancelling Headphones",
+    "description": "Premium wireless headphones with active noise cancellation and 30-hour battery life",
+    "price": 129.99,
+    "category": "Electronics",
+    "image": "https:",
+    "rating": 4.8,
+    "stock": 0
+  }
+]

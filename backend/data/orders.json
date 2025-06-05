@@ -1,0 +1,30 @@
+[
+  {
+    "order_id": "cdd51e2b-1ae4-4d1c-8d90-b4d678ef08b7",
+    "user_id": "Warisha",
+    "items": [
+      {
+        "id": "24",
+        "name": "Premium Loose Leaf Tea Collection",
+        "category": "Food & Beverage",
+        "price": 32.99,
+        "quantity": 1
+      }
+    ],
+    "total_price": 32.99
+  },
+  {
+    "order_id": "1fff9038-279d-426e-99bd-4b90c93a612c",
+    "user_id": "Warisha",
+    "items": [
+      {
+        "id": "29",
+        "name": "Compact Air Purifier",
+        "category": "Home",
+        "price": 129.95,
+        "quantity": 1
+      }
+    ],
+    "total_price": 129.95
+  }
+]
