@@ -5,10 +5,13 @@ import Image from "next/image";
 import { CartService } from "@/services/CartService";
 import { CartItem } from "@/models/CartItem";
 import Link from "next/link";
+import Navbar from "@/components/NavBar";
+import { WishlistSidebar } from "@/components/WishlistSidebar";
 
 export default function CartPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [wishlistSidebarOpen, setWishlistSidebarOpen] = useState(false);
     const cartService = CartService.getInstance();
 
     useEffect(() => {
@@ -38,14 +41,20 @@ export default function CartPage() {
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     return (
-        <div className="pt-24 p-6">
-        <h1 className="text-2xl font-bold mb-4">Shopping Cart</h1>
+        <>
+            <Navbar onWishlistToggle={() => setWishlistSidebarOpen(!wishlistSidebarOpen)} />
+            <WishlistSidebar 
+                isOpen={wishlistSidebarOpen} 
+                onClose={() => setWishlistSidebarOpen(false)} 
+            />
+            <div className="pt-24 p-6">
+                <h1 className="text-2xl font-bold mb-4">Shopping Cart</h1>
 
-        {loading ? (
-            <p>Loading cart...</p>
-        ) : cart.length === 0 ? (
-            <p>Your cart is empty.</p>
-        ) : (
+                {loading ? (
+                    <p>Loading cart...</p>
+                ) : cart.length === 0 ? (
+                    <p>Your cart is empty.</p>
+                ) : (
             <>
             {cart.map((item) => (
                 <div
@@ -74,7 +83,7 @@ export default function CartPage() {
             ))}
 
             <h3 className="text-xl font-semibold mt-6">
-                Total: ${total.toFixed(2)}
+                                Total: ${total.toFixed(2)}
             </h3>
 
             <Link
@@ -85,6 +94,7 @@ export default function CartPage() {
             </Link>
             </>
         )}
-        </div>
+            </div>
+        </>
     );
 }

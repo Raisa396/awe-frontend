@@ -4,14 +4,11 @@ import { useEffect, useState } from "react";
 import { CartItem } from "@/models/CartItem";
 import { CartService } from "@/services/CartService";
 import { UserService } from "@/services/UserService";
-import Navbar from "@/components/NavBar";
-import { WishlistSidebar } from "@/components/WishlistSidebar";
 
 export default function OrderPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [wishlistSidebarOpen, setWishlistSidebarOpen] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -27,7 +24,8 @@ export default function OrderPage() {
         const loadData = async () => {
             setLoading(true);
             
-            const userName = userService.getUserId()
+            // Load user name from UserService
+            const userName = userService.getUserId(); // Using getUserId as name for now
             setName(userName);
             
             // Load cart
@@ -49,36 +47,13 @@ export default function OrderPage() {
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const discountedTotal = total - discount;
 
-    const handlePromoApply = async () => {
-        if (!promoCode.trim()) {
-            alert("Please enter a promo code.");
-            return;
-        }
-
-        try {
-            const response = await fetch("http://localhost:5000/promo/validate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code: promoCode.trim() })
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                if (result.valid) {
-                    setDiscount(total * (result.discount / 100));
-                    alert(result.message);
-                } else {
-                    setDiscount(0);
-                    alert(result.message);
-                }
-            } else {
-                setDiscount(0);
-                alert("Failed to validate promo code. Please try again.");
-            }
-        } catch (error) {
-            console.error("Promo validation error:", error);
+    const handlePromoApply = () => {
+        if (promoCode.trim().toUpperCase() === "DISCOUNT10") {
+            setDiscount(total * 0.1);
+            alert("Promo code applied! 10% discount.");
+        } else {
             setDiscount(0);
-            alert("Failed to validate promo code. Please try again.");
+            alert("Invalid promo code.");
         }
     };
 
@@ -123,23 +98,17 @@ export default function OrderPage() {
         } finally {
             setSubmitting(false);
         }
-        };
+    };
 
     return (
-        <>
-            <Navbar onWishlistToggle={() => setWishlistSidebarOpen(!wishlistSidebarOpen)} />
-            <WishlistSidebar 
-                isOpen={wishlistSidebarOpen} 
-                onClose={() => setWishlistSidebarOpen(false)} 
-            />
-            <div className="pt-24 p-6 max-w-3xl mx-auto">
-                <h1 className="text-2xl font-bold mb-6">Checkout</h1>
+        <div className="pt-24 p-6 max-w-3xl mx-auto">
+            <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
-                {loading ? (
-                    <div className="flex items-center justify-center py-8">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                            <p className="text-gray-600">Loading cart...</p>
+            {loading ? (
+                <div className="flex items-center justify-center py-8">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <p className="text-gray-600">Loading cart...</p>
                     </div>
                 </div>
             ) : cart.length === 0 ? (
@@ -152,10 +121,10 @@ export default function OrderPage() {
             ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block font-medium">Name</label>
+                        <label htmlFor="fullName" className="block font-medium">Full Name</label>
                         <input
-                            id="name"
-                            className="w-full p-2 border rounded bg-gray-700"
+                            id="fullName"
+                            className="w-full p-2 border rounded bg-gray-100"
                             value={name}
                             disabled
                             title="Name is automatically set from your user profile"
@@ -272,7 +241,6 @@ export default function OrderPage() {
                     </button>
                 </form>
             )}
-            </div>
-        </>
+        </div>
     );
 }

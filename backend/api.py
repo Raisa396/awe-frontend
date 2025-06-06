@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from services.product_service import get_all_products, search_products
 from services.cart_service import get_cart, add_to_cart, remove_from_cart, clear_cart
 from services.wishlist_service import get_wishlist, add_to_wishlist, remove_from_wishlist, clear_wishlist
-from services.order_service import place_order, validate_promo_code
+from services.order_service import validate_promo_code,get_user_orders,place_order
 
 from flask_cors import CORS
 app = Flask(__name__)
@@ -80,6 +80,11 @@ def validate_promo():
     code = data.get("code", "")
     return jsonify(validate_promo_code(code))
 
+# Orders Routes
+@app.route("/orders/<user_id>")
+def get_orders(user_id):
+    orders = get_user_orders(user_id)
+    return jsonify(orders)
 
 if __name__ == "__main__":
     app.run(debug=True)

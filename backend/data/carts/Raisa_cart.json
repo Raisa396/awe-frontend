@@ -16,5 +16,23 @@
     "quantity": 1,
     "total_price": 36.99,
     "imageUrl": "https://images.unsplash.com/photo-1577918385240-e252d7805a16?q=80&w=800&auto=format&fit=crop"
+  },
+  {
+    "id": "18",
+    "name": "Yoga Mat with Alignment Lines",
+    "category": "Fitness",
+    "price": 42.5,
+    "quantity": 1,
+    "total_price": 42.5,
+    "imageUrl": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?q=80&w=800&auto=format&fit=crop"
+  },
+  {
+    "id": "1",
+    "name": "Modern Ergonomic Chair",
+    "category": "Furniture",
+    "price": 149.99,
+    "quantity": 1,
+    "total_price": 149.99,
+    "imageUrl": "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=800&auto=format&fit=crop"
   }
 ]

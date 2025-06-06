@@ -57,3 +57,16 @@ def validate_promo_code(code):
             "discount": 0,
             "message": "Invalid promo code."
         }
+
+def get_user_orders(user_id):
+    """Get all orders for a specific user"""
+
+    all_orders = read_json(ORDERS_FILE)
+    
+    # Filter orders for the specific user
+    user_orders = [order for order in all_orders if order.get('user_id') == user_id]
+    
+    # Sort by order_id (most recent first, assuming newer orders have later IDs)
+    user_orders.sort(key=lambda x: x.get('order_id'), reverse=True)
+    
+    return user_orders
