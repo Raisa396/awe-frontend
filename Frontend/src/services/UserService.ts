@@ -1,6 +1,7 @@
 /**
  * Service for managing user session and identification
  */
+'use client'
 export class UserService {
     private static instance: UserService;
     private userId: string | null = null;

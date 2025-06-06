@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { CartService } from "@/services/CartService";
 import { CartItem } from "@/models/CartItem";
+import Link from "next/link";
 
 export default function CartPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
@@ -76,12 +77,12 @@ export default function CartPage() {
                 Total: ${total.toFixed(2)}
             </h3>
 
-            <a
+            <Link
                 href="/order"
                 className="mt-6 inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
             >
                 Proceed to Checkout
-            </a>
+            </Link>
             </>
         )}
         </div>

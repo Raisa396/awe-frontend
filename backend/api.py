@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from services.product_service import get_all_products, search_products
 from services.cart_service import get_cart, add_to_cart, remove_from_cart, clear_cart
 from services.wishlist_service import get_wishlist, add_to_wishlist, remove_from_wishlist, clear_wishlist
-from services.order_service import place_order
+from services.order_service import place_order, validate_promo_code
 
 from flask_cors import CORS
 app = Flask(__name__)
@@ -66,8 +66,20 @@ def wishlist_clear(user_id):
 
 @app.route("/order/<user_id>", methods=["POST"])
 def order(user_id):
-    result = place_order(user_id)
+    data = request.json or {}
+    customer_info = data.get("customer")
+    discount = data.get("discount", 0)
+    
+    result = place_order(user_id, customer_info, discount)
     return jsonify(result if result else {"status": "cart empty"})
+
+# Promo Code Routes
+@app.route("/promo/validate", methods=["POST"])
+def validate_promo():
+    data = request.json
+    code = data.get("code", "")
+    return jsonify(validate_promo_code(code))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

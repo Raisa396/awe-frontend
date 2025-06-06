@@ -1,29 +1,20 @@
 [
   {
-    "id": "18",
-    "name": "Yoga Mat with Alignment Lines",
-    "category": "Fitness",
-    "price": 42.5,
+    "id": "11",
+    "name": "Professional Art Pencil Set",
+    "category": "Art Supplies",
+    "price": 19.99,
     "quantity": 1,
-    "total_price": 42.5,
-    "imageUrl": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?q=80&w=800&auto=format&fit=crop"
+    "total_price": 19.99,
+    "imageUrl": "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=800&auto=format&fit=crop"
   },
   {
-    "id": "6",
-    "name": "Smart Home Security Camera with Advanced Motion Detection Technology",
-    "category": "Electronics",
-    "price": 89.99,
-    "quantity": 1,
-    "total_price": 89.99,
-    "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=800&auto=format&fit=crop"
-  },
-  {
-    "id": "7",
-    "name": "Stainless Steel Water Bottle",
+    "id": "21",
+    "name": "Handmade Ceramic Mug Set",
     "category": "Kitchen",
-    "price": 34.99,
+    "price": 36.99,
     "quantity": 1,
-    "total_price": 34.99,
-    "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=800&auto=format&fit=crop"
+    "total_price": 36.99,
+    "imageUrl": "https://images.unsplash.com/photo-1577918385240-e252d7805a16?q=80&w=800&auto=format&fit=crop"
   }
 ]
