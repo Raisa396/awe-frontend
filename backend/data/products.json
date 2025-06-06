@@ -5,7 +5,7 @@
         "description": "High-quality ergonomic office chair with lumbar support and adjustable height",
         "price": 149.99,
         "category": "Furniture",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=800&auto=format&fit=crop",
         "rating": 4.5,
         "stock": 15
     },
@@ -15,7 +15,7 @@
         "description": "Premium wireless headphones with active noise cancellation and 30-hour battery life",
         "price":129.99,
         "category": "Electronics",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop",
         "rating": 4.8,
         "stock": 0
     },
@@ -25,7 +25,7 @@
         "description": "Track your workouts, heart rate, sleep quality and more with this advanced fitness tracker",
         "price": 129.99,
         "category": "Electronics",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=800&auto=format&fit=crop",
         "rating": 4.3,
         "stock": 24
     },
@@ -35,7 +35,7 @@
         "description": "Modern LED desk lamp with adjustable brightness and color temperature",
         "price": 59.99,
         "category": "Home",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1534105555282-7f53a64f4eb8?q=80&w=800&auto=format&fit=crop",
         "rating": 4.1,
         "stock": 32
     },
@@ -45,7 +45,7 @@
         "description": "Soft, breathable 100% organic cotton t-shirt in a relaxed fit",
         "price": 29.99,
         "category": "Clothing",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop",
         "rating": 4.4,
         "stock": 0
     },
@@ -55,7 +55,7 @@
         "description": "HD security camera with motion detection, night vision, and smartphone integration",
         "price": 89.99,
         "category": "Electronics",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=800&auto=format&fit=crop",
         "rating": 4.2,
         "stock": 17
     },
@@ -65,7 +65,7 @@
         "description": "Vacuum-insulated bottle that keeps drinks cold for 24 hours or hot for 12 hours",
         "price": 34.99,
         "category": "Kitchen",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=800&auto=format&fit=crop",
         "rating": 4.7,
         "stock": 42
     },
@@ -75,7 +75,7 @@
         "description": "Minimalist ceramic pot perfect for indoor plants and succulents",
         "price": 24.99,
         "category": "Home",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1485955900006-10f4d324d411?q=80&w=800&auto=format&fit=crop",
         "rating": 4.0,
         "stock": 29
     },
@@ -85,7 +85,7 @@
         "description": "Premium acacia wood cutting board with juice grooves and handle",
         "price": 45.99,
         "category": "Kitchen",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1541529086526-db283c563270?q=80&w=800&auto=format&fit=crop",
         "rating": 3.5,
         "stock": 18
     },
@@ -95,7 +95,7 @@
         "description": "Bluetooth-enabled record player with built-in speakers and USB recording",
         "price": 129.99,
         "category": "Electronics",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1461360228754-6e81c478b882?q=80&w=800&auto=format&fit=crop",
         "rating": 2.8,
         "stock": 7
     },
@@ -105,7 +105,7 @@
         "description": "Set of 24 artist-grade colored pencils in a metal case",
         "price": 19.99,
         "category": "Art Supplies",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=800&auto=format&fit=crop",
         "rating": 5.0,
         "stock": 31
     },
@@ -115,7 +115,7 @@
         "description": "Eco-friendly non-slip bamboo bath mat with water-resistant finish",
         "price": 38.5,
         "category": "Home",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1563291074-2bf8677ac0e5?q=80&w=800&auto=format&fit=crop",
         "rating": 3.9,
         "stock": 0
     },
@@ -125,7 +125,7 @@
         "description": "Handmade leather journal with recycled paper pages and bookmark",
         "price": 27.99,
         "category": "Stationery",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1518481852452-9415b262eba4?q=80&w=800&auto=format&fit=crop",
         "rating": 4.2,
         "stock": 22
     },
@@ -135,7 +135,7 @@
         "description": "Color-changing LED bulbs controllable via smartphone app or voice assistant",
         "price": 49.99,
         "category": "Electronics",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1550948537-130a1ce83314?q=80&w=800&auto=format&fit=crop",
         "rating": 2.5,
         "stock": 47
     },
@@ -144,7 +144,7 @@
         "name": "Minimalist Wall Clock",
         "description": "Modern silent wall clock with Scandinavian design",
         "price": 32.5,
-        "category": "Home",
+        "category": "https://images.unsplash.com/photo-1563460716037-460a3ad24ba9?q=80&w=800&auto=format&fit=crop",
         "image": "https:",
         "rating": 3.7,
         "stock": 19
@@ -155,7 +155,7 @@
         "description": "Waterproof speaker with 20-hour battery life and rich bass",
         "price": 79.99,
         "category": "Electronics",
-        "image": "https:",
+        "image":"https://images.unsplash.com/photo-1589001184633-69991e79e0e7?q=80&w=800&auto=format&fit=crop",
         "rating": 3.2,
         "stock": 14
     },
@@ -165,7 +165,7 @@
         "description": "Non-slip eco-friendly yoga mat with position guide marks",
         "price": 42.5,
         "category": "Fitness",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?q=80&w=800&auto=format&fit=crop",
         "rating": 4.6,
         "stock": 25
     },
@@ -175,7 +175,7 @@
         "description": "Tactile mechanical keyboard with RGB backlighting and programmable keys",
         "price": 119.99,
         "category": "Electronics",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=800&auto=format&fit=crop",
         "rating": 4.0,
         "stock": 0
     },
@@ -185,7 +185,7 @@
         "description": "Soft, warm sweater made from 100% merino wool in classic style",
         "price": 65.5,
         "category": "Clothing",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?q=80&w=800&auto=format&fit=crop",
         "rating":3.8,
         "stock": 12
     },
@@ -195,7 +195,7 @@
         "description": "Set of 4 artisan mugs with unique glazing patterns",
         "price": 36.99,
         "category": "Kitchen",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1577918385240-e252d7805a16?q=80&w=800&auto=format&fit=crop",
         "rating": 4.7,
         "stock": 19
     },
@@ -205,7 +205,7 @@
         "description": "Durable 30L backpack with hydration system compatibility",
         "price": 89.95,
         "category": "Outdoor",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop",
         "rating": 2.9,
         "stock": 8
     },
@@ -215,7 +215,7 @@
         "description": "Pressure-sensitive tablet for digital artists with wireless connectivity",
         "price": 199.5,
         "category": "Electronics",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1589401945430-77240638bdce?q=80&w=800&auto=format&fit=crop",
         "rating": 4.5,
         "stock": 0
     },
@@ -225,7 +225,7 @@
         "description": "Six varieties of organic loose leaf tea in reusable tins",
         "price": 32.99,
         "category": "Food & Beverage",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?q=80&w=800&auto=format&fit=crop",
         "rating": 3.3,
         "stock": 27
     },
@@ -235,7 +235,7 @@
         "description": "Bamboo desk organizer with multiple compartments and device stand",
         "price": 45.0,
         "category": "Office",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1593114970899-7b8c952e757a?q=80&w=800&auto=format&fit=crop",
         "rating": 4.4,
         "stock": 33
     },
@@ -245,7 +245,7 @@
         "description": "Space-saving dumbbell set with adjustable weights from 5-25 pounds each",
         "price": 249.99,
         "category": "Fitness",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=800&auto=format&fit=crop",
         "rating": 1.7,
         "stock": 5
     },
@@ -255,7 +255,7 @@
         "description": "Soft cotton throw blanket with geometric patterns and fringed edges",
         "price": 59.95,
         "category": "Home",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1600369671236-e74451ee0f3a?q=80&w=800&auto=format&fit=crop",
         "rating": 2.0,
         "stock": 14
     },
@@ -265,7 +265,7 @@
         "description": "Complete bartending kit with shaker, jigger, strainer, and recipe book",
         "price": 75.0,
         "category": "Kitchen",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800&auto=format&fit=crop",
         "rating": 3.9,
         "stock": 21
     },
@@ -275,7 +275,7 @@
         "description": "HEPA air purifier ideal for bedrooms and small spaces with quiet operation",
         "price": 129.95,
         "category": "Home",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1585771724684-38269d6933c5?q=80&w=800&auto=format&fit=crop",
         "rating": 4.1,
         "stock": 9
     },
@@ -285,7 +285,7 @@
         "description": "Handcrafted wooden chess set with felt-lined storage box",
         "price": 89.99,
         "category": "Games",
-        "image": "https:",
+        "image": "https://images.unsplash.com/photo-1586165368502-1bad197a6461?q=80&w=800&auto=format&fit=crop",
         "rating": 2.2,
         "stock": 0
     }
