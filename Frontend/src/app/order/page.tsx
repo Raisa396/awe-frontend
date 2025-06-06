@@ -6,6 +6,7 @@ import { CartService } from "@/services/CartService";
 
 export default function OrderPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
+    const [loading, setLoading] = useState(true);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -14,9 +15,25 @@ export default function OrderPage() {
     const [promoCode, setPromoCode] = useState("");
     const [discount, setDiscount] = useState(0);
 
+    const cartService = CartService.getInstance();
+
     useEffect(() => {
-        setCart(CartService.getCart());
-    }, []);
+        const loadCart = async () => {
+            setLoading(true);
+            await cartService.reloadCart();
+            setCart(cartService.getCart());
+            setLoading(false);
+        };
+
+        loadCart();
+
+        // Subscribe to cart changes
+        const unsubscribe = cartService.subscribe(() => {
+            setCart(cartService.getCart());
+        });
+
+        return unsubscribe;
+    }, [cartService]);
 
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const discountedTotal = total - discount;
@@ -31,7 +48,7 @@ export default function OrderPage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!name || !email || !phone || !address) {
@@ -52,7 +69,7 @@ export default function OrderPage() {
         localStorage.setItem("placed_orders", JSON.stringify(existing));
 
         alert("✅ Order placed successfully!");
-        CartService.clearCart();
+        await cartService.clearCart();
         window.location.href = "/shop";
     };
 

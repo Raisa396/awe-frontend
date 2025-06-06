@@ -1,19 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { CartService } from "@/services/CartService";
 import { CartItem } from "@/models/CartItem";
 
 export default function CartPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const cartService = CartService.getInstance();
 
     useEffect(() => {
-        setCart(CartService.getCart());
-    }, []);
+        const loadCart = async () => {
+            setLoading(true);
+            await cartService.reloadCart();
+            setCart(cartService.getCart());
+            setLoading(false);
+        };
 
-    const handleRemove = (productId: string) => {
-        CartService.removeItem(productId);
-        setCart(CartService.getCart());
+        loadCart();
+
+        // Subscribe to cart changes
+        const unsubscribe = cartService.subscribe(() => {
+            setCart(cartService.getCart());
+        });
+
+        return unsubscribe;
+    }, [cartService]);
+
+    const handleRemove = async (productId: string) => {
+        setLoading(true);
+        await cartService.removeItem(productId);
+        setLoading(false);
     };
 
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -22,7 +40,9 @@ export default function CartPage() {
         <div className="pt-24 p-6">
         <h1 className="text-2xl font-bold mb-4">Shopping Cart</h1>
 
-        {cart.length === 0 ? (
+        {loading ? (
+            <p>Loading cart...</p>
+        ) : cart.length === 0 ? (
             <p>Your cart is empty.</p>
         ) : (
             <>
@@ -31,10 +51,12 @@ export default function CartPage() {
                 key={item.productId}
                 className="mb-4 flex items-center gap-4 border-b pb-2"
                 >
-                <img
+                <Image
                     src={item.imageUrl}
                     alt={item.name}
-                    className="w-20 h-20 object-cover rounded"
+                    width={140}
+                    height={140}
+                    className="w-30 h-30 object-cover rounded"
                 />
                 <div className="flex-1">
                     <h2 className="text-lg font-medium">{item.name}</h2>
