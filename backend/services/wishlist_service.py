@@ -14,7 +14,10 @@ def add_to_wishlist(user_id, product):
     wishlist.append(product)
     write_json(get_wishlist_filepath(user_id), wishlist)
 
-def remove_from_wishlist(user_id, product_id):
+def remove_from_wishlist(user_id, product):
     wishlist = get_wishlist(user_id)
-    wishlist = [item for item in wishlist if item["id"] != product_id]
+    wishlist = [item for item in wishlist if item["id"] != product["id"]]
     write_json(get_wishlist_filepath(user_id), wishlist)
+
+def clear_wishlist(user_id):
+    write_json(get_wishlist_filepath(user_id), [])

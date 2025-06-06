@@ -10,9 +10,14 @@ export const NavBar = ({ onWishlistToggle }: NavBarProps) => {
     const [wishlistCount, setWishlistCount] = useState(0);
     const wishlistService = WishlistService.getInstance();
 
-    // Update wishlist count on mount and subscribe to changes
+    // Load wishlist count when component mounts
     useEffect(() => {
-        setWishlistCount(wishlistService.getWishlistCount());
+        const loadWishlistCount = async () => {
+            await wishlistService.reloadWishlist();
+            setWishlistCount(wishlistService.getWishlistCount());
+        };
+
+        loadWishlistCount();
 
         const unsubscribe = wishlistService.subscribe(() => {
             setWishlistCount(wishlistService.getWishlistCount());
@@ -20,6 +25,7 @@ export const NavBar = ({ onWishlistToggle }: NavBarProps) => {
 
         return unsubscribe;
     }, [wishlistService]);
+
 
     return (
         <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
@@ -44,16 +50,16 @@ export const NavBar = ({ onWishlistToggle }: NavBarProps) => {
                         </button>
 
                         {/* Wishlist Icon */}
-                        <button 
+                        <button
                             onClick={onWishlistToggle}
                             className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
                         >
-                            <Heart 
+                            <Heart
                                 className={`h-6 w-6 transition-colors ${
-                                    wishlistCount > 0 
-                                        ? "text-red-500 fill-red-500" 
+                                    wishlistCount > 0
+                                        ? "text-red-500 fill-red-500"
                                         : "text-gray-700 dark:text-gray-200 group-hover:text-red-500"
-                                }`} 
+                                }`}
                             />
                             {/* Wishlist count badge */}
                             {wishlistCount > 0 && (

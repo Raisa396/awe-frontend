@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
-import { WishlistService, WishlistChangeEvent } from '@/services/WishlistService';
-import { Product } from '@/models/Product';
+import { useState, useEffect } from "react";
+import { WishlistService } from "@/services/WishlistService";
+import { Product } from "@/models/Product";
 
 /**
- * Custom hook for wishlist management
- * 
- * Provides reactive state management for wishlist operations
- * Automatically subscribes/unsubscribes to wishlist changes
+ * Simple hook for wishlist management
  */
 export function useWishlist() {
     const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
@@ -15,48 +12,56 @@ export function useWishlist() {
 
     const wishlistService = WishlistService.getInstance();
 
-    // Load initial data and subscribe to changes
+    // Load initial data
     useEffect(() => {
-        const loadWishlist = () => {
+        const loadWishlist = async () => {
+            await wishlistService.reloadWishlist();
             setWishlistProducts(wishlistService.getWishlistProducts());
             setWishlistCount(wishlistService.getWishlistCount());
             setIsLoading(false);
         };
 
-        // Load initial data
         loadWishlist();
+    }, []);
 
-        // Subscribe to changes
-        const unsubscribe = wishlistService.subscribe((event: WishlistChangeEvent) => {
-            loadWishlist();
-        });
-
-        // Cleanup subscription
-        return unsubscribe;
-    }, [wishlistService]);
-
-    const addToWishlist = (productId: string) => {
-        return wishlistService.addToWishlist(productId);
+    const addToWishlist = async (product: Product) => {
+        const success = await wishlistService.addToWishlist(product);
+        if (success) {
+            setWishlistProducts(wishlistService.getWishlistProducts());
+            setWishlistCount(wishlistService.getWishlistCount());
+        }
+        return success;
     };
 
-    const removeFromWishlist = (productId: string) => {
-        return wishlistService.removeFromWishlist(productId);
+    const removeFromWishlist = async (product: Product) => {
+        const success = await wishlistService.removeFromWishlist(product);
+        if (success) {
+            setWishlistProducts(wishlistService.getWishlistProducts());
+            setWishlistCount(wishlistService.getWishlistCount());
+        }
+        return success;
     };
 
-    const toggleWishlist = (productId: string) => {
-        return wishlistService.toggleWishlist(productId);
+    const toggleWishlist = async (product: Product) => {
+        const added = await wishlistService.toggleWishlist(product);
+        setWishlistProducts(wishlistService.getWishlistProducts());
+        setWishlistCount(wishlistService.getWishlistCount());
+        return added;
     };
 
-    const isInWishlist = (productId: string) => {
-        return wishlistService.isInWishlist(productId);
+    const isInWishlist = (product: Product) => {
+        return wishlistService.isInWishlist(product);
     };
 
-    const clearWishlist = () => {
-        wishlistService.clearWishlist();
+    const clearWishlist = async () => {
+        await wishlistService.clearWishlist();
+        setWishlistProducts([]);
+        setWishlistCount(0);
     };
 
     const moveAllToCart = () => {
-        wishlistService.moveAllToCart();
+        // TODO: Implement cart functionality - placeholder for now
+        console.log("Moving all items to cart");
     };
 
     return {

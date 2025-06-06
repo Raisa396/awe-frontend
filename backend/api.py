@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from services.product_service import get_all_products, search_products
 from services.cart_service import get_cart, add_to_cart
-from services.wishlist_service import get_wishlist, add_to_wishlist
+from services.wishlist_service import get_wishlist, add_to_wishlist, remove_from_wishlist, clear_wishlist
 from services.order_service import place_order
 
 from flask_cors import CORS
@@ -35,8 +35,20 @@ def wishlist(user_id):
 @app.route("/wishlist/<user_id>/add", methods=["POST"])
 def wishlist_add(user_id):
     product = request.json
+    print(product)
     add_to_wishlist(user_id, product)
     return jsonify({"status": "added"})
+
+@app.route("/wishlist/<user_id>/remove", methods=["POST"])
+def wishlist_remove(user_id):
+    product = request.json
+    remove_from_wishlist(user_id, product)
+    return jsonify({"status": "removed"})
+
+@app.route("/wishlist/<user_id>/clear", methods=["POST"])
+def wishlist_clear(user_id):
+    clear_wishlist(user_id)
+    return jsonify({"status": "cleared"})
 
 @app.route("/order/<user_id>", methods=["POST"])
 def order(user_id):

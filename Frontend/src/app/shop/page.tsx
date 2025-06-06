@@ -1,6 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
+import { Heart, ShoppingCart, Search } from "lucide-react";
+import { NavBar } from "@/components/NavBar";
+import { WishlistSidebar } from "@/components/WishlistSidebar";
+import {
+    ProductGridSkeleton,
+} from "@/components/ProductCardSkeleton";
 
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -18,13 +25,8 @@ import {
     SortOption as ServerSortOption,
     PaginationOptions,
 } from "@/services/ProductService";
-import { Product } from "@/models/Product";
-import Link from "next/link";
-import Image from "next/image";
-import { Search, Heart, ShoppingCart } from "lucide-react";
 import { WishlistService } from "@/services/WishlistService";
-import { NavBar } from "@/components/NavBar";
-import { WishlistSidebar } from "@/components/WishlistSidebar";
+import { Product } from "@/models/Product";
 
 // Enhanced star rating component with partial stars
 const StarRating = ({ rating }: { rating: number }) => {
@@ -92,34 +94,33 @@ const StarRating = ({ rating }: { rating: number }) => {
     );
 };
 
-// Product card with hover effects from Aceternity UI style
 const ProductCard = ({ product }: { product: Product }) => {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isWishlistAnimating, setIsWishlistAnimating] = useState(false);
     const wishlistService = WishlistService.getInstance();
 
-    // Check wishlist status on mount and subscribe to changes
+    // Check wishlist status on mount
     useEffect(() => {
-        setIsInWishlist(wishlistService.isInWishlist(product.id));
+        setIsInWishlist(wishlistService.isInWishlist(product));
 
         const unsubscribe = wishlistService.subscribe((event) => {
             if (event.productId === product.id) {
-                setIsInWishlist(wishlistService.isInWishlist(product.id));
+                setIsInWishlist(wishlistService.isInWishlist(product));
             }
         });
 
-        return unsubscribe;
+        return unsubscribe;    
     }, [product.id, wishlistService]);
 
-    const handleWishlistToggle = () => {
+    const handleWishlistToggle = async () => {
         setIsWishlistAnimating(true);
-        
+
         if (isInWishlist) {
-            wishlistService.removeFromWishlist(product.id);
+            await wishlistService.removeFromWishlist(product);
         } else {
-            wishlistService.addToWishlist(product.id);
+            await wishlistService.addToWishlist(product);
         }
-        
+
         // Reset animation state
         setTimeout(() => setIsWishlistAnimating(false), 300);
     };
@@ -132,7 +133,7 @@ const ProductCard = ({ product }: { product: Product }) => {
     return (
         <div className="group relative overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-xl dark:bg-gray-900">
             <div className="aspect-square overflow-hidden">
-                <div className="relative h-full w-full transition-transform group-hover:scale-110">
+                <div className="relative h-full w-full transition-transform group-hover:scale-110 ">
                     <Image
                         src={product.image}
                         alt={product.name}
@@ -141,30 +142,32 @@ const ProductCard = ({ product }: { product: Product }) => {
                     />
                 </div>
             </div>
-            
+
             {/* Gradient overlay on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
-            
+
             {/* Action buttons that appear on hover */}
-            <div className="absolute top-10 right-[2px] transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-3">
+            <div className="absolute top-4 right-3 transform  opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-3">
                 <button
+                    title="Add to Wishlist"
                     onClick={handleWishlistToggle}
                     className={`p-3 rounded-full transition-all duration-300 ${
-                        isWishlistAnimating ? 'scale-125' : 'scale-100'
+                        isWishlistAnimating ? "scale-125" : "scale-100"
                     } ${
-                        isInWishlist 
-                            ? 'bg-red-500 text-white shadow-lg' 
-                            : 'bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:text-red-500'
+                        isInWishlist
+                            ? "bg-red-500 text-white shadow-lg"
+                            : "bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:text-red-500"
                     } backdrop-blur-sm hover:scale-110 shadow-lg`}
                 >
-                    <Heart 
+                    <Heart
                         className={`h-5 w-5 transition-all duration-200 ${
-                            isInWishlist ? 'fill-current' : ''
-                        }`} 
+                            isInWishlist ? "fill-current" : ""
+                        }`}
                     />
                 </button>
-                
+
                 <button
+                    title="Add to Cart"
                     onClick={handleAddToCart}
                     disabled={!product.isInStock()}
                     className="p-3 rounded-full bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:text-blue-500 backdrop-blur-sm hover:scale-110 shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -172,9 +175,9 @@ const ProductCard = ({ product }: { product: Product }) => {
                     <ShoppingCart className="h-5 w-5" />
                 </button>
             </div>
-            
+
             {/* Product info - elevated on hover */}
-            <div className="p-4 transition-transform duration-300 group-hover:-translate-y-2">
+            <div className="p-4 transition-transform duration-300 group-hover:scale-105 group-hover:-translate-y-1">
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 truncate h-6">
                     {product.name}
                 </h3>
@@ -447,6 +450,7 @@ const Pagination = ({
         <div className="flex items-center justify-center space-x-2">
             {/* Previous page button */}
             <button
+                title="Go to previous page"
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 className={`p-2 rounded-md ${
@@ -485,6 +489,7 @@ const Pagination = ({
 
                 return (
                     <button
+                        title={`Go to ${pageNumber} page`}
                         key={pageNumber}
                         onClick={() => onPageChange(pageNumber)}
                         className={`w-8 h-8 flex items-center justify-center rounded-md ${
@@ -500,6 +505,7 @@ const Pagination = ({
 
             {/* Next page button */}
             <button
+                        title="Go to next page"
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className={`p-2 rounded-md ${
@@ -532,6 +538,7 @@ export default function ShopPage() {
     const [categories, setCategories] = useState<string[]>([]);
     const [totalProducts, setTotalProducts] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(1);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     // Filter, sort, and pagination state
     const [searchQuery, setSearchQuery] = useState("");
@@ -561,20 +568,31 @@ export default function ShopPage() {
 
     // Initialize product data
     useEffect(() => {
-        const productService = ProductService.getInstance();
+        const initializeData = async () => {
+            setIsLoading(true);
+            const productService = ProductService.getInstance();
 
-        // Get categories for filter
-        const allCategories = productService.getCategories();
-        setCategories(allCategories);
+            try {
+                // Get categories for filter
+                const allCategories = await productService.getCategories();
+                setCategories(allCategories);
 
-        // Set initial price range based on product data
-        const { min, max } = productService.getPriceRange();
-        setMinPossiblePrice(min);
-        setMaxPossiblePrice(max);
-        setPriceRange([min, max]);
+                // Set initial price range based on product data
+                const { min, max } = await productService.getPriceRange();
+                setMinPossiblePrice(min);
+                setMaxPossiblePrice(max);
+                setPriceRange([min, max]);
 
-        // Fetch initial products
-        loadProducts();
+                // Fetch initial products
+                await loadProducts();
+            } catch (error) {
+                console.error("Error initializing shop data:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        initializeData();
     }, []);
 
     // Prepare filter options
@@ -608,7 +626,8 @@ export default function ShopPage() {
     };
 
     // Load products with current filter, sort, and pagination options
-    const loadProducts = () => {
+    const loadProducts = async () => {
+        setIsLoading(true);
         const productService = ProductService.getInstance();
 
         // Prepare filter, sort, and pagination options
@@ -619,7 +638,7 @@ export default function ShopPage() {
         };
 
         // Get products with all options
-        const result = productService.getProducts(
+        const result = await productService.getProducts(
             filterOptions,
             sortOption,
             paginationOptions
@@ -629,6 +648,7 @@ export default function ShopPage() {
         setProducts(result.products);
         setTotalProducts(result.totalCount);
         setTotalPages(result.totalPages);
+        setIsLoading(false);
     };
 
     // Reload products when filter, sort, or pagination changes
@@ -665,8 +685,10 @@ export default function ShopPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-            <NavBar onWishlistToggle={() => setIsWishlistOpen(!isWishlistOpen)} />
-            
+            <NavBar
+                onWishlistToggle={() => setIsWishlistOpen(!isWishlistOpen)}
+            />
+
             <div className="py-12">
                 <div className="container mx-auto px-4">
                     <header className="mb-8 text-center">
@@ -674,217 +696,229 @@ export default function ShopPage() {
                             Browse Our Products
                         </h1>
                         <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
-                            Discover our curated selection of high-quality products
+                            Discover our curated selection of high-quality
+                            products
                         </p>
                     </header>
-                
-                {/* Search bar at the top */}
-                <div className="mb-8 w-full">
-                    <SearchInput
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                    />
-                </div>
 
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Sidebar filters */}
-                    <div className="w-full lg:w-1/4 lg:sticky lg:top-8 lg:self-start">
-                        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-lg font-medium">Filters</h2>
-                                <button
-                                    onClick={resetFilters}
-                                    className="text-sm text-gray-600 dark:text-gray-400 hover:underline"
-                                >
-                                    Reset all
-                                </button>
-                            </div>
-
-                            <div className="space-y-6">
-                                <div>
-                                    <h3 className="text-sm font-medium mb-3">
-                                        Sort by
-                                    </h3>
-                                    <SortDropdown
-                                        options={sortOptions}
-                                        selectedOption={sortOption}
-                                        onSelect={setSortOption}
-                                    />
-                                </div>
-
-                                <div>
-                                    <h3 className="text-sm font-medium mb-3">
-                                        Categories
-                                    </h3>
-                                    <CategoryFilter
-                                        categories={categories}
-                                        selectedCategories={selectedCategories}
-                                        onSelect={handleCategorySelect}
-                                    />
-                                </div>
-
-                                <div>
-                                    <h3 className="text-sm font-medium mb-3">
-                                        Price
-                                    </h3>
-                                    <PriceRangeFilter
-                                        minPrice={minPossiblePrice}
-                                        maxPrice={maxPossiblePrice}
-                                        priceRange={priceRange}
-                                        onChange={setPriceRange}
-                                    />
-                                </div>
-
-                                <div>
-                                    <h3 className="text-sm font-medium mb-3">
-                                        Rating
-                                    </h3>
-                                    <RatingFilter
-                                        value={minRating}
-                                        onChange={setMinRating}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                    {/* Search bar at the top */}
+                    <div className="mb-8 w-full">
+                        <SearchInput
+                            value={searchQuery}
+                            onChange={setSearchQuery}
+                        />
                     </div>
 
-                    {/* Main content - product grid */}
-                    <div className="w-full lg:w-3/4">
-                        <div className="flex justify-between items-center mb-4">
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
-                                Showing {products.length} of {totalProducts}{" "}
-                                products
-                            </div>
-
-                            <div className="lg:hidden">
-                                <button
-                                    onClick={() => setShowFilters(!showFilters)}
-                                    className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                    <div className="flex flex-col lg:flex-row gap-8">
+                        {/* Sidebar filters */}
+                        <div className="w-full lg:w-1/4 lg:sticky lg:top-8 lg:self-start">
+                            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-lg font-medium">
+                                        Filters
+                                    </h2>
+                                    <button
+                                        onClick={resetFilters}
+                                        className="text-sm text-gray-600 dark:text-gray-400 hover:underline"
                                     >
-                                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-                                    </svg>
-                                    Filters
-                                </button>
-                            </div>
-                        </div>
-
-                        {showFilters && (
-                            <div className="lg:hidden mb-6 bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700 space-y-6">
-                                <div>
-                                    <h3 className="text-sm font-medium mb-2">
-                                        Sort by
-                                    </h3>
-                                    <SortDropdown
-                                        options={sortOptions}
-                                        selectedOption={sortOption}
-                                        onSelect={setSortOption}
-                                    />
-                                </div>
-                                <div>
-                                    <h3 className="text-sm font-medium mb-2">
-                                        Categories
-                                    </h3>
-                                    <CategoryFilter
-                                        categories={categories}
-                                        selectedCategories={selectedCategories}
-                                        onSelect={handleCategorySelect}
-                                    />
-                                </div>
-                                <div>
-                                    <h3 className="text-sm font-medium mb-2">
-                                        Price
-                                    </h3>
-                                    <PriceRangeFilter
-                                        minPrice={minPossiblePrice}
-                                        maxPrice={maxPossiblePrice}
-                                        priceRange={priceRange}
-                                        onChange={setPriceRange}
-                                    />
-                                </div>
-                                <div>
-                                    <h3 className="text-sm font-medium mb-2">
-                                        Rating
-                                    </h3>
-                                    <RatingFilter
-                                        value={minRating}
-                                        onChange={setMinRating}
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {products.length > 0 ? (
-                            <>
-                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mb-8">
-                                    {products.map((product) => (
-                                        <ProductCard
-                                            key={product.id}
-                                            product={product}
-                                        />
-                                    ))}
+                                        Reset all
+                                    </button>
                                 </div>
 
-                                {/* Pagination */}
-                                {totalPages > 1 && (
-                                    <div className="mt-8">
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            onPageChange={handlePageChange}
+                                <div className="space-y-6">
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-3">
+                                            Sort by
+                                        </h3>
+                                        <SortDropdown
+                                            options={sortOptions}
+                                            selectedOption={sortOption}
+                                            onSelect={setSortOption}
                                         />
                                     </div>
-                                )}
-                            </>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center py-12 text-center">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-16 w-16 text-gray-400"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={1.5}
-                                        d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"
-                                    />
-                                </svg>
-                                <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-gray-100">
-                                    No products found
-                                </h3>
-                                <p className="mt-1 text-gray-600 dark:text-gray-400">
-                                    Try adjusting your search or filters to find
-                                    what you're looking for.
-                                </p>
-                                <button
-                                    onClick={resetFilters}
-                                    className="mt-6 rounded-lg bg-black px-4 py-2 font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                                >
-                                    Clear all filters
-                                </button>
+
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-3">
+                                            Categories
+                                        </h3>
+                                        <CategoryFilter
+                                            categories={categories}
+                                            selectedCategories={
+                                                selectedCategories
+                                            }
+                                            onSelect={handleCategorySelect}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-3">
+                                            Price
+                                        </h3>
+                                        <PriceRangeFilter
+                                            minPrice={minPossiblePrice}
+                                            maxPrice={maxPossiblePrice}
+                                            priceRange={priceRange}
+                                            onChange={setPriceRange}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-3">
+                                            Rating
+                                        </h3>
+                                        <RatingFilter
+                                            value={minRating}
+                                            onChange={setMinRating}
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                        )}
+                        </div>
+
+                        {/* Main content - product grid */}
+                        <div className="w-full lg:w-3/4">
+                            <div className="flex justify-between items-center mb-4">
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    Showing {products.length} of {totalProducts}{" "}
+                                    products
+                                </div>
+
+                                <div className="lg:hidden">
+                                    <button
+                                        onClick={() =>
+                                            setShowFilters(!showFilters)
+                                        }
+                                        className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm dark:border-gray-600 dark:bg-gray-800"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="14"
+                                            height="14"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                                        </svg>
+                                        Filters
+                                    </button>
+                                </div>
+                            </div>
+
+                            {showFilters && (
+                                <div className="lg:hidden mb-6 bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700 space-y-6">
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-2">
+                                            Sort by
+                                        </h3>
+                                        <SortDropdown
+                                            options={sortOptions}
+                                            selectedOption={sortOption}
+                                            onSelect={setSortOption}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-2">
+                                            Categories
+                                        </h3>
+                                        <CategoryFilter
+                                            categories={categories}
+                                            selectedCategories={
+                                                selectedCategories
+                                            }
+                                            onSelect={handleCategorySelect}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-2">
+                                            Price
+                                        </h3>
+                                        <PriceRangeFilter
+                                            minPrice={minPossiblePrice}
+                                            maxPrice={maxPossiblePrice}
+                                            priceRange={priceRange}
+                                            onChange={setPriceRange}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-medium mb-2">
+                                            Rating
+                                        </h3>
+                                        <RatingFilter
+                                            value={minRating}
+                                            onChange={setMinRating}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {isLoading ? (
+                                <ProductGridSkeleton count={pageSize} />
+                            ) : products.length > 0 ? (
+                                <>
+                                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 mb-8">
+                                        {products.map((product) => (
+                                            <ProductCard
+                                                key={product.id}
+                                                product={product}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    {/* Pagination */}
+                                    {totalPages > 1 && (
+                                        <div className="mt-8">
+                                            <Pagination
+                                                currentPage={currentPage}
+                                                totalPages={totalPages}
+                                                onPageChange={handlePageChange}
+                                            />
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center py-12 text-center">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-16 w-16 text-gray-400"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={1.5}
+                                            d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"
+                                        />
+                                    </svg>
+                                    <h3 className="mt-4 text-xl font-medium text-gray-900 dark:text-gray-100">
+                                        No products found
+                                    </h3>
+                                    <p className="mt-1 text-gray-600 dark:text-gray-400">
+                                        Try adjusting your search or filters to
+                                        find what you're looking for.
+                                    </p>
+                                    <button
+                                        onClick={resetFilters}
+                                        className="mt-6 rounded-lg bg-black px-4 py-2 font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                                    >
+                                        Clear all filters
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div></div>
+                </div>
             </div>
-            
+
             {/* Wishlist Sidebar */}
-            <WishlistSidebar 
-                isOpen={isWishlistOpen} 
-                onClose={() => setIsWishlistOpen(false)} 
+            <WishlistSidebar
+                isOpen={isWishlistOpen}
+                onClose={() => setIsWishlistOpen(false)}
             />
         </div>
     );

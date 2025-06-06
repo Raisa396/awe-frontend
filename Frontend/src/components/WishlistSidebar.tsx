@@ -12,15 +12,15 @@ interface WishlistSidebarProps {
 const WishlistProductCard = ({ product }: { product: Product }) => {
     const wishlistService = WishlistService.getInstance();
 
-    const handleRemove = () => {
-        wishlistService.removeFromWishlist(product.id);
+    const handleRemove = async () => {
+        await wishlistService.removeFromWishlist(product);
     };
 
     const handleMoveToCart = () => {
-        // TODO: Implement cart functionality
+        // TODO: Implement cart functionality - placeholder for now
         console.log(`Moving ${product.name} to cart`);
         // For now, remove from wishlist
-        wishlistService.removeFromWishlist(product.id);
+        wishlistService.removeFromWishlist(product);
     };
 
     return (
@@ -85,15 +85,17 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
     // Load wishlist products and subscribe to changes
     useEffect(() => {
         const loadWishlistProducts = async () => {
+            await wishlistService.reloadWishlist();
             const products = await wishlistService.getWishlistProducts();
+            console.log(products);
             setWishlistProducts(products);
             setWishlistCount(wishlistService.getWishlistCount());
         };
 
         loadWishlistProducts();
 
-        const unsubscribe = wishlistService.subscribe(async () => {
-            const products = await wishlistService.getWishlistProducts();
+        const unsubscribe = wishlistService.subscribe(() => {
+            const products = wishlistService.getWishlistProducts();
             setWishlistProducts(products);
             setWishlistCount(wishlistService.getWishlistCount());
         });
@@ -101,12 +103,12 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
         return unsubscribe;
     }, [wishlistService]);
 
-    const handleClearWishlist = () => {
-        wishlistService.clearWishlist();
+    const handleClearWishlist = async () => {
+        await wishlistService.clearWishlist();
     };
 
     const handleMoveAllToCart = () => {
-        // TODO: Implement cart functionality
+        // TODO: Implement cart functionality - placeholder for now
         console.log("Moving all items to cart");
         wishlistService.clearWishlist();
     };
@@ -136,6 +138,7 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
                         </h2>
                     </div>
                     <button
+                        title="Close Wishlist"
                         onClick={onClose}
                         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     >
@@ -169,7 +172,10 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
                             {/* Product List */}
                             <div className="flex-1 overflow-y-auto p-4 space-y-3">
                                 {wishlistProducts.map((product) => (
-                                    <WishlistProductCard key={product.id} product={product} />
+                                    <WishlistProductCard
+                                        key={product.id}
+                                        product={product}
+                                    />
                                 ))}
                             </div>
                         </>
