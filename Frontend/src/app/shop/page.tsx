@@ -6,7 +6,7 @@ import { CartItem } from "@/models/CartItem";
 import { WishlistService } from "@/services/WishlistService";
 import Image from "next/image";
 import { Heart, ShoppingCart, Search } from "lucide-react";
-import { NavBar } from "@/components/NavBar";
+import NavBar from "@/components/NavBar";
 import { WishlistSidebar } from "@/components/WishlistSidebar";
 import {
     ProductGridSkeleton,
@@ -123,7 +123,7 @@ const ProductCard = ({
     }, [product.id, wishlistService]);
 
     const handleWishlistToggle = async () => {
-        setIsWishlistAnimating(true);
+        setIsAnimating(true);
 
         if (isInWishlist) {
             await wishlistService.removeFromWishlist(product);
@@ -132,7 +132,7 @@ const ProductCard = ({
         }
 
         // Reset animation state
-        setTimeout(() => setIsWishlistAnimating(false), 300);
+        setTimeout(() => setIsAnimating(false), 300);
     };
 
     const handleAddToCart = () => {
@@ -162,7 +162,7 @@ const ProductCard = ({
                     title="Add to Wishlist"
                     onClick={handleWishlistToggle}
                     className={`p-3 rounded-full transition-all duration-300 ${
-                        isWishlistAnimating ? "scale-125" : "scale-100"
+                        isAnimating ? "scale-125" : "scale-100"
                     } ${
                         isInWishlist
                             ? "bg-red-500 text-white shadow-lg"
@@ -565,6 +565,7 @@ export default function ShopPage() {
     const [totalProducts, setTotalProducts] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
 
     // Filter, sort, and pagination state
     const [searchQuery, setSearchQuery] = useState("");
@@ -588,10 +589,6 @@ export default function ShopPage() {
         { label: "Name: A to Z", value: "name-asc" },
         { label: "Name: Z to A", value: "name-desc" },
     ];
-    const handleWishlistToggle = () => {
-    console.log("Wishlist toggled");
-    };
-
 
     // Initialize product data
     useEffect(() => {
@@ -639,10 +636,10 @@ export default function ShopPage() {
             // "All Categories" selected - clear all selections
             setSelectedCategories([]);
         } else {
-            setSelectedCategories(prev => {
+      setSelectedCategories((prev) => {
                 if (prev.includes(category)) {
                     // Remove category if already selected
-                    return prev.filter(c => c !== category);
+          return prev.filter((c) => c !== category);
                 } else {
                     // Add category if not selected
                     return [...prev, category];
@@ -715,7 +712,7 @@ export default function ShopPage() {
                 onWishlistToggle={() => setIsWishlistOpen(!isWishlistOpen)}
             />
 
-            <div className="py-12">
+            <div className="py-24">
                 <div className="container mx-auto px-4">
                     <header className="mb-8 text-center">
                         <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -890,6 +887,7 @@ export default function ShopPage() {
                                             <ProductCard
                                                 key={product.id}
                                                 product={product}
+                                                onAddToCart={handleAddToCart}
                                             />
                                         ))}
                                     </div>
@@ -948,5 +946,4 @@ export default function ShopPage() {
             />
         </div>
     );
-
 }

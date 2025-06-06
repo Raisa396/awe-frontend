@@ -81,11 +81,15 @@ export class WishlistService {
             );
             if (response.ok) {
                 const productsData = await response.json();
+                // Ensure products are loaded in ProductService first
+                await this.productsService.getAllProducts();
+                
                 // Convert plain objects to Product instances
                 this.wishlistProducts = productsData.map((productData: any) => 
                     this.productsService.getProductById(productData.id)
                 );
-                productsData.forEach((productData: { id: any; }) => {
+                
+                this.wishlistProducts.forEach((productData: Product) => {
                     this.notifyListeners({
                       type: "added",
                       productId: productData.id,

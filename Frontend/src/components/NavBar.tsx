@@ -54,26 +54,24 @@ export default function Navbar({ onWishlistToggle }: NavbarProps) {
                 <Link href="/myorder" className="hover:text-gray-300">My Orders</Link>
 
                         {/* Wishlist Icon */}
-                        <button
-                            onClick={onWishlistToggle}
-                            className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
-                        >
-                            <Heart
-                                className={`h-6 w-6 transition-colors ${
-                                    wishlistCount > 0
-                                        ? "text-red-500 fill-red-500"
-                                        : "text-gray-700 dark:text-gray-200 group-hover:text-red-500"
-                                }`}
-                            />
-                            {/* Wishlist count badge */}
-                            {wishlistCount > 0 && (
-                                <span className="absolute -top-1 -right-1 h-5 w-5 text-xs font-medium bg-red-500 text-white rounded-full flex items-center justify-center animate-in zoom-in-50">
-                                    {wishlistCount}
-                                </span>
-                            )}
-                        </button>
-                    </div>
-                </div>
+                <button
+                    onClick={onWishlistToggle}
+                    className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group"
+                >
+                    <Heart
+                        className={`h-6 w-6 transition-colors ${
+                            wishlistCount > 0
+                                ? "text-red-500 fill-red-500"
+                                : "text-gray-700 dark:text-gray-200 group-hover:text-red-500"
+                        }`}
+                    />
+                    {/* Wishlist count badge */}
+                    {wishlistCount > 0 && (
+                        <span className="absolute -top-1 -right-1 h-5 w-5 text-xs font-medium bg-red-500 text-white rounded-full flex items-center justify-center animate-in zoom-in-50">
+                            {wishlistCount}
+                        </span>
+                    )}
+                </button>
             </div>
         </nav>
     );
