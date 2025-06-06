@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { CartService } from "@/services/CartService";
+import { CartItem } from "@/models/CartItem";
+import { WishlistService } from "@/services/WishlistService";
 import Image from "next/image";
 import { Heart, ShoppingCart, Search } from "lucide-react";
 import { NavBar } from "@/components/NavBar";
@@ -12,21 +15,21 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
+import { 
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import {
-    ProductService,
-    FilterOptions,
-    SortOption as ServerSortOption,
-    PaginationOptions,
+import { 
+    ProductService, 
+    FilterOptions, 
+    SortOption as ServerSortOption, 
+    PaginationOptions 
 } from "@/services/ProductService";
-import { WishlistService } from "@/services/WishlistService";
 import { Product } from "@/models/Product";
+import Link from "next/link";
 
 // Enhanced star rating component with partial stars
 const StarRating = ({ rating }: { rating: number }) => {
@@ -94,9 +97,16 @@ const StarRating = ({ rating }: { rating: number }) => {
     );
 };
 
-const ProductCard = ({ product }: { product: Product }) => {
+// Product card with hover effects from Aceternity UI style
+const ProductCard = ({
+    product,
+    onAddToCart,
+    }: {
+    product: Product;
+    onAddToCart: (product: Product) => void;
+    }) => {
     const [isInWishlist, setIsInWishlist] = useState(false);
-    const [isWishlistAnimating, setIsWishlistAnimating] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
     const wishlistService = WishlistService.getInstance();
 
     // Check wishlist status on mount
@@ -168,7 +178,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
                 <button
                     title="Add to Cart"
-                    onClick={handleAddToCart}
+                    onClick={() => onAddToCart(product)}
                     disabled={!product.isInStock()}
                     className="p-3 rounded-full bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:text-blue-500 backdrop-blur-sm hover:scale-110 shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -203,6 +213,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
     );
 };
+
 
 const SearchInput = ({
     value,
@@ -412,7 +423,7 @@ const Pagination = ({
     const getPageNumbers = () => {
         const pages = [];
         const maxPagesToShow = 5;
-
+        
         if (totalPages <= maxPagesToShow) {
             // Show all pages if there are few enough
             for (let i = 1; i <= totalPages; i++) {
@@ -421,31 +432,31 @@ const Pagination = ({
         } else {
             // Always include first and last page
             pages.push(1);
-
+            
             // Calculate range around current page
             const leftSide = Math.max(2, currentPage - 1);
             const rightSide = Math.min(totalPages - 1, currentPage + 1);
-
+            
             // Add ellipsis if needed
             if (leftSide > 2) pages.push(-1); // -1 represents ellipsis
-
+            
             // Add pages around current page
             for (let i = leftSide; i <= rightSide; i++) {
                 pages.push(i);
             }
-
+            
             // Add ellipsis if needed
             if (rightSide < totalPages - 1) pages.push(-1);
-
+            
             // Add last page
             if (totalPages > 1) pages.push(totalPages);
         }
-
+        
         return pages;
     };
-
+    
     const pageNumbers = getPageNumbers();
-
+    
     return (
         <div className="flex items-center justify-center space-x-2">
             {/* Previous page button */}
@@ -472,7 +483,7 @@ const Pagination = ({
                     />
                 </svg>
             </button>
-
+            
             {/* Page numbers */}
             {pageNumbers.map((pageNumber, index) => {
                 if (pageNumber === -1) {
@@ -486,7 +497,7 @@ const Pagination = ({
                         </span>
                     );
                 }
-
+                
                 return (
                     <button
                         title={`Go to ${pageNumber} page`}
@@ -502,7 +513,7 @@ const Pagination = ({
                     </button>
                 );
             })}
-
+            
             {/* Next page button */}
             <button
                         title="Go to next page"
@@ -531,6 +542,21 @@ const Pagination = ({
     );
 };
 
+
+// Add to Cart handler — adds selected product to localStorage cart
+const handleAddToCart = (product: Product) => {
+    const item = {
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        imageUrl: product.image,
+    };
+
+    CartService.addToCart(item);
+    alert(`${product.name} added to cart`);
+};
+
 // Main shop page component
 export default function ShopPage() {
     // Products and filtering state
@@ -550,9 +576,6 @@ export default function ShopPage() {
     const [pageSize] = useState(9); // Number of products per page
     const [showFilters, setShowFilters] = useState(false);
 
-    // Wishlist sidebar state
-    const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-
     // Track the min and max prices for the price filter component
     const [minPossiblePrice, setMinPossiblePrice] = useState(0);
     const [maxPossiblePrice, setMaxPossiblePrice] = useState(500);
@@ -565,6 +588,10 @@ export default function ShopPage() {
         { label: "Name: A to Z", value: "name-asc" },
         { label: "Name: Z to A", value: "name-desc" },
     ];
+    const handleWishlistToggle = () => {
+    console.log("Wishlist toggled");
+    };
+
 
     // Initialize product data
     useEffect(() => {
@@ -594,13 +621,12 @@ export default function ShopPage() {
 
         initializeData();
     }, []);
-
+    
     // Prepare filter options
     const prepareFilterOptions = (): FilterOptions => {
         return {
             searchQuery: searchQuery || undefined,
-            categories:
-                selectedCategories.length > 0 ? selectedCategories : undefined,
+            categories: selectedCategories.length > 0 ? selectedCategories : undefined,
             minPrice: priceRange[0],
             maxPrice: priceRange[1],
             minRating: minRating || undefined,
@@ -613,10 +639,10 @@ export default function ShopPage() {
             // "All Categories" selected - clear all selections
             setSelectedCategories([]);
         } else {
-            setSelectedCategories((prev) => {
+            setSelectedCategories(prev => {
                 if (prev.includes(category)) {
                     // Remove category if already selected
-                    return prev.filter((c) => c !== category);
+                    return prev.filter(c => c !== category);
                 } else {
                     // Add category if not selected
                     return [...prev, category];
@@ -624,33 +650,33 @@ export default function ShopPage() {
             });
         }
     };
-
+    
     // Load products with current filter, sort, and pagination options
     const loadProducts = async () => {
         setIsLoading(true);
         const productService = ProductService.getInstance();
-
+        
         // Prepare filter, sort, and pagination options
         const filterOptions = prepareFilterOptions();
         const paginationOptions: PaginationOptions = {
             page: currentPage,
             pageSize: pageSize,
         };
-
+        
         // Get products with all options
         const result = await productService.getProducts(
             filterOptions,
             sortOption,
             paginationOptions
         );
-
+        
         // Update state with results
         setProducts(result.products);
         setTotalProducts(result.totalCount);
         setTotalPages(result.totalPages);
         setIsLoading(false);
     };
-
+    
     // Reload products when filter, sort, or pagination changes
     useEffect(() => {
         // Reset to first page when filters change
@@ -660,19 +686,19 @@ export default function ShopPage() {
             loadProducts();
         }
     }, [searchQuery, selectedCategories, sortOption, priceRange, minRating]);
-
+    
     // Reload products when page changes
     useEffect(() => {
         loadProducts();
     }, [currentPage]);
-
+    
     // Handle page change
     const handlePageChange = (page: number) => {
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-
+    
     // Reset all filters
     const resetFilters = () => {
         setSearchQuery("");
@@ -922,4 +948,5 @@ export default function ShopPage() {
             />
         </div>
     );
+
 }

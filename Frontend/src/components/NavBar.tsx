@@ -1,13 +1,18 @@
+"use client";
+import Link from "next/link";
 import { Heart, ShoppingCart } from "lucide-react";
-import { WishlistService } from "@/services/WishlistService";
 import { useState, useEffect } from "react";
+import { WishlistService } from "@/services/WishlistService";
+import { CartService } from "@/services/CartService";
 
-interface NavBarProps {
+interface NavbarProps {
     onWishlistToggle: () => void;
 }
 
-export const NavBar = ({ onWishlistToggle }: NavBarProps) => {
+export default function Navbar({ onWishlistToggle }: NavbarProps) {
     const [wishlistCount, setWishlistCount] = useState(0);
+    const [cartCount, setCartCount] = useState(0);
+
     const wishlistService = WishlistService.getInstance();
 
     // Load wishlist count when component mounts
@@ -23,31 +28,30 @@ export const NavBar = ({ onWishlistToggle }: NavBarProps) => {
             setWishlistCount(wishlistService.getWishlistCount());
         });
 
-        return unsubscribe;
+        const cart = CartService.getCart();
+        setCartCount(cart.reduce((sum, item) => sum + item.quantity, 0));
+
+        return () => {
+            unsubscribe?.();
+        };
     }, [wishlistService]);
 
-
     return (
-        <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-            <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
-                    <div className="flex items-center space-x-4">
-                        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                            AWE Shop
-                        </h1>
-                    </div>
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white px-6 py-4 flex justify-between items-center shadow">
+            <div className="text-xl font-bold tracking-wide">AWE Store</div>
 
-                    {/* Navigation Icons */}
-                    <div className="flex items-center space-x-4">
-                        {/* Cart Icon */}
-                        <button className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                            <ShoppingCart className="h-6 w-6 text-gray-700 dark:text-gray-200" />
-                            {/* Cart count badge (placeholder) */}
-                            <span className="absolute -top-1 -right-1 h-5 w-5 text-xs font-medium bg-red-500 text-white rounded-full flex items-center justify-center">
-                                0
-                            </span>
-                        </button>
+            <div className="flex items-center gap-6">
+                {/* Navigation Links */}
+                <Link href="/shop" className="hover:text-gray-300">Home</Link>
+                <Link href="/cart" className="relative hover:text-gray-300">
+                    Cart
+                    {cartCount > 0 && (
+                        <span className="absolute -top-2 -right-3 h-5 w-5 text-xs font-medium bg-red-500 text-white rounded-full flex items-center justify-center">
+                            {cartCount}
+                        </span>
+                    )}
+                </Link>
+                <Link href="/myorder" className="hover:text-gray-300">My Orders</Link>
 
                         {/* Wishlist Icon */}
                         <button
@@ -73,4 +77,4 @@ export const NavBar = ({ onWishlistToggle }: NavBarProps) => {
             </div>
         </nav>
     );
-};
+}
