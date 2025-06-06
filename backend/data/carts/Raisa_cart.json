@@ -1,26 +1,12 @@
 [
   {
-    "id": "5",
-    "name": "Organic Cotton T-Shirt",
-    "category": "Clothing",
-    "price": 29.99,
-    "quantity": 1
-  },
-  {
-    "id": "22",
-    "name": "Lightweight Hiking Backpack",
-    "category": "Outdoor",
-    "price": 89.95,
+    "id": "11",
+    "name": "Professional Art Pencil Set",
+    "category": "Art Supplies",
+    "price": 19.99,
     "quantity": 1,
-    "total_price": 89.95
-  },
-  {
-    "id": "7",
-    "name": "Stainless Steel Water Bottle",
-    "category": "Kitchen",
-    "price": 34.99,
-    "quantity": 1,
-    "total_price": 34.99
+    "total_price": 19.99,
+    "imageUrl": "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=800&auto=format&fit=crop"
   },
   {
     "id": "21",
@@ -28,22 +14,7 @@
     "category": "Kitchen",
     "price": 36.99,
     "quantity": 1,
-    "total_price": 36.99
-  },
-  {
-    "id": "11",
-    "name": "Professional Art Pencil Set",
-    "category": "Art Supplies",
-    "price": 19.99,
-    "quantity": 1,
-    "total_price": 19.99
-  },
-  {
-    "id": "18",
-    "name": "Yoga Mat with Alignment Lines",
-    "category": "Fitness",
-    "price": 42.5,
-    "quantity": 1,
-    "total_price": 42.5
+    "total_price": 36.99,
+    "imageUrl": "https://images.unsplash.com/photo-1577918385240-e252d7805a16?q=80&w=800&auto=format&fit=crop"
   }
 ]

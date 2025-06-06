@@ -14,6 +14,7 @@ export default function Navbar({ onWishlistToggle }: NavbarProps) {
     const [cartCount, setCartCount] = useState(0);
 
     const wishlistService = WishlistService.getInstance();
+    const cartService = CartService.getInstance();
 
     // Load wishlist count when component mounts
     useEffect(() => {
@@ -22,19 +23,27 @@ export default function Navbar({ onWishlistToggle }: NavbarProps) {
             setWishlistCount(wishlistService.getWishlistCount());
         };
 
-        loadWishlistCount();
+        const loadCartCount = async () => {
+            await cartService.reloadCart();
+            setCartCount(cartService.getCartCount());
+        };
 
-        const unsubscribe = wishlistService.subscribe(() => {
+        loadWishlistCount();
+        loadCartCount();
+
+        const unsubscribeWishlist = wishlistService.subscribe(() => {
             setWishlistCount(wishlistService.getWishlistCount());
         });
 
-        const cart = CartService.getCart();
-        setCartCount(cart.reduce((sum, item) => sum + item.quantity, 0));
+        const unsubscribeCart = cartService.subscribe(() => {
+            setCartCount(cartService.getCartCount());
+        });
 
         return () => {
-            unsubscribe?.();
+            unsubscribeWishlist?.();
+            unsubscribeCart?.();
         };
-    }, [wishlistService]);
+    }, [wishlistService, cartService]);
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white px-6 py-4 flex justify-between items-center shadow">

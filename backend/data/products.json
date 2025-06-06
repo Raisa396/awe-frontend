@@ -144,8 +144,8 @@
         "name": "Minimalist Wall Clock",
         "description": "Modern silent wall clock with Scandinavian design",
         "price": 32.5,
-        "category": "https://images.unsplash.com/photo-1563460716037-460a3ad24ba9?q=80&w=800&auto=format&fit=crop",
-        "image": "https:",
+        "category": "Home Decor",
+        "image": "https://images.unsplash.com/photo-1563460716037-460a3ad24ba9?q=80&w=800&auto=format&fit=crop",
         "rating": 3.7,
         "stock": 19
     },

@@ -1,5 +1,6 @@
 import { X, Heart, ShoppingCart, Trash2 } from "lucide-react";
 import { WishlistService } from "@/services/WishlistService";
+import { CartService } from "@/services/CartService";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Product } from "@/models/Product";
@@ -11,16 +12,18 @@ interface WishlistSidebarProps {
 
 const WishlistProductCard = ({ product }: { product: Product }) => {
     const wishlistService = WishlistService.getInstance();
+    const cartService = CartService.getInstance();
 
     const handleRemove = async () => {
         await wishlistService.removeFromWishlist(product);
     };
 
-    const handleMoveToCart = () => {
-        // TODO: Implement cart functionality - placeholder for now
-        console.log(`Moving ${product.name} to cart`);
-        // For now, remove from wishlist
-        wishlistService.removeFromWishlist(product);
+    const handleMoveToCart = async () => {
+        const success = await cartService.addToCart(product, 1);
+        if (success) {
+            // Remove from wishlist after successful cart addition
+            await wishlistService.removeFromWishlist(product);
+        }
     };
 
     return (
@@ -81,6 +84,7 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
     const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
     const [wishlistCount, setWishlistCount] = useState(0);
     const wishlistService = WishlistService.getInstance();
+    const cartService = CartService.getInstance();
 
     // Load wishlist products and subscribe to changes
     useEffect(() => {
@@ -107,10 +111,15 @@ export const WishlistSidebar = ({ isOpen, onClose }: WishlistSidebarProps) => {
         await wishlistService.clearWishlist();
     };
 
-    const handleMoveAllToCart = () => {
-        // TODO: Implement cart functionality - placeholder for now
-        console.log("Moving all items to cart");
-        wishlistService.clearWishlist();
+    const handleMoveAllToCart = async () => {
+        // Add all wishlist items to cart
+        for (const product of wishlistProducts) {
+            if (product.isInStock()) {
+                await cartService.addToCart(product, 1);
+            }
+        }
+        // Clear wishlist after moving items
+        await wishlistService.clearWishlist();
     };
 
     return (

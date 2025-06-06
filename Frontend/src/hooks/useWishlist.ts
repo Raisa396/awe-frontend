@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { WishlistService } from "@/services/WishlistService";
+import { CartService } from "@/services/CartService";
 import { Product } from "@/models/Product";
 
 /**
@@ -59,9 +60,16 @@ export function useWishlist() {
         setWishlistCount(0);
     };
 
-    const moveAllToCart = () => {
-        // TODO: Implement cart functionality - placeholder for now
-        console.log("Moving all items to cart");
+    const moveAllToCart = async () => {
+        const cartService = CartService.getInstance();
+        // Add all wishlist items to cart
+        for (const product of wishlistProducts) {
+            if (product.isInStock()) {
+                await cartService.addToCart(product, 1);
+            }
+        }
+        // Clear wishlist after moving items
+        await clearWishlist();
     };
 
     return {

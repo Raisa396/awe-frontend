@@ -135,6 +135,7 @@
     "total_price": 389.97
   },
   {
+<<<<<<< HEAD
     "order_id": "b744f882-fd8e-44d0-89cf-c396579992bb",
     "user_id": "Axio",
     "items": [
@@ -148,5 +149,48 @@
       }
     ],
     "total_price": 149.99
+=======
+    "order_id": "ec6cb44e-79f7-4226-ab22-22486c9fc305",
+    "user_id": "Raisa",
+    "customer": {
+      "name": "Raisa",
+      "email": "rraisa@aad",
+      "phone": "afadfad",
+      "address": "afadfadf",
+      "notes": ""
+    },
+    "items": [
+      {
+        "id": "18",
+        "name": "Yoga Mat with Alignment Lines",
+        "category": "Fitness",
+        "price": 42.5,
+        "quantity": 1,
+        "total_price": 42.5,
+        "imageUrl": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?q=80&w=800&auto=format&fit=crop"
+      },
+      {
+        "id": "6",
+        "name": "Smart Home Security Camera with Advanced Motion Detection Technology",
+        "category": "Electronics",
+        "price": 89.99,
+        "quantity": 1,
+        "total_price": 89.99,
+        "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=800&auto=format&fit=crop"
+      },
+      {
+        "id": "7",
+        "name": "Stainless Steel Water Bottle",
+        "category": "Kitchen",
+        "price": 34.99,
+        "quantity": 1,
+        "total_price": 34.99,
+        "imageUrl": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=800&auto=format&fit=crop"
+      }
+    ],
+    "total_price": 167.48,
+    "discount": 83.74000000000001,
+    "final_total": 83.73999999999998
+>>>>>>> 81c766f41aa618ac2b9d92638e0c51507f6162ae
   }
 ]

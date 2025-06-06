@@ -135,9 +135,8 @@ const ProductCard = ({
         setTimeout(() => setIsAnimating(false), 300);
     };
 
-    const handleAddToCart = () => {
-        // TODO: Implement cart functionality
-        console.log(`Adding ${product.name} to cart`);
+    const handleAddToCart = async () => {
+        onAddToCart(product);
     };
 
     return (
@@ -178,7 +177,7 @@ const ProductCard = ({
 
                 <button
                     title="Add to Cart"
-                    onClick={() => onAddToCart(product)}
+                    onClick={handleAddToCart}
                     disabled={!product.isInStock()}
                     className="p-3 rounded-full bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-400 hover:text-blue-500 backdrop-blur-sm hover:scale-110 shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -543,18 +542,16 @@ const Pagination = ({
 };
 
 
-// Add to Cart handler — adds selected product to localStorage cart
-const handleAddToCart = (product: Product) => {
-    const item = {
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        quantity: 1,
-        imageUrl: product.image,
-    };
-
-    CartService.addToCart(item);
-    alert(`${product.name} added to cart`);
+// Add to Cart handler — adds selected product via API
+const handleAddToCart = async (product: Product) => {
+    const cartService = CartService.getInstance();
+    const success = await cartService.addToCart(product, 1);
+    
+    if (success) {
+        alert(`${product.name} added to cart`);
+    } else {
+        alert(`Failed to add ${product.name} to cart`);
+    }
 };
 
 // Main shop page component

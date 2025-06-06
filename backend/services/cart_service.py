@@ -34,10 +34,22 @@ def add_to_cart(user_id, product):
             "category": product["category"],
             "price": product["price"],
             "quantity": quantity,
-            "total_price": round(quantity * product["price"], 2)
+            "total_price": round(quantity * product["price"], 2),
+            "imageUrl": product["imageUrl"],
         }
         cart.append(new_item)
         print("➕ [DEBUG] Added new item:", new_item)
 
     write_json(get_cart_filepath(user_id), cart)
     print("💾 [DEBUG] Cart written successfully.")
+
+def remove_from_cart(user_id, product_id):
+    cart = get_cart(user_id)
+    
+    updated_cart = [item for item in cart if item["id"] != product_id]
+
+    write_json(get_cart_filepath(user_id), updated_cart)
+    return len(cart) != len(updated_cart)  # Return True if item was removed
+
+def clear_cart(user_id):
+    write_json(get_cart_filepath(user_id), [])
