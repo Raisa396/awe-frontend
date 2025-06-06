@@ -13,7 +13,7 @@
         "id": "2",
         "name": "Wireless Noise-Cancelling Headphones",
         "description": "Premium wireless headphones with active noise cancellation and 30-hour battery life",
-        "price":129.99,
+        "price": 129.99,
         "category": "Electronics",
         "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop",
         "rating": 4.8,
@@ -181,7 +181,7 @@
     },
     {
         "id": "20",
-       "name": "Wool Knit Sweater",
+        "name": "Wool Knit Sweater",
         "description": "Soft, warm sweater made from 100% merino wool in classic style",
         "price": 65.5,
         "category": "Clothing",

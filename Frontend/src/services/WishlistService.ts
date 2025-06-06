@@ -1,23 +1,22 @@
-import { WishlistItem } from "@/models/WishlistItem";
 import { Product } from "@/models/Product";
 import { ProductService } from "./ProductService";
+import { UserService } from "./UserService";
 
 export type WishlistChangeEvent = {
-    type: 'added' | 'removed' | 'cleared';
+    type: "added" | "removed" | "cleared";
     productId?: string;
-    item?: WishlistItem;
 };
 
 /**
- * Service for managing wishlist data using localStorage
- * 
+ * Service for managing wishlist data using backend API
+ *
  * Features:
- * - Persistent storage using localStorage
+ * - Backend API integration for persistent storage
  * - Event-driven architecture for UI updates
  * - Singleton pattern for global state management
  * - Type-safe operations
- * 
- * In a real application, this service would:
+ *
+ * Features:
  * - Sync with backend API for cross-device wishlist
  * - Handle user authentication and user-specific wishlists
  * - Implement conflict resolution for concurrent modifications
@@ -25,12 +24,16 @@ export type WishlistChangeEvent = {
  */
 export class WishlistService {
     private static instance: WishlistService;
-    private wishlistItems: WishlistItem[] = [];
-    private readonly STORAGE_KEY = 'awe-wishlist';
+    private wishlistProducts: Product[] = [];
+    private readonly API_BASE_URL = "http://localhost:5000";
     private listeners: ((event: WishlistChangeEvent) => void)[] = [];
+    private userService: UserService;
+    private productsService: ProductService;
 
     private constructor() {
-        this.loadFromStorage();
+        this.userService = UserService.getInstance();
+        this.productsService = ProductService.getInstance();
+        this.loadFromApi();
     }
 
     /**
@@ -46,9 +49,11 @@ export class WishlistService {
     /**
      * Subscribe to wishlist changes
      */
-    public subscribe(listener: (event: WishlistChangeEvent) => void): () => void {
+    public subscribe(
+        listener: (event: WishlistChangeEvent) => void
+    ): () => void {
         this.listeners.push(listener);
-        
+
         // Return unsubscribe function
         return () => {
             const index = this.listeners.indexOf(listener);
@@ -62,159 +67,216 @@ export class WishlistService {
      * Notify all listeners of wishlist changes
      */
     private notifyListeners(event: WishlistChangeEvent): void {
-        this.listeners.forEach(listener => listener(event));
+        this.listeners.forEach((listener) => listener(event));
     }
 
     /**
-     * Load wishlist from localStorage
+     * Load wishlist from backend API
      */
-    private loadFromStorage(): void {
+    private async loadFromApi(): Promise<void> {
         try {
-            const stored = localStorage.getItem(this.STORAGE_KEY);
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                this.wishlistItems = parsed.map((item: any) => 
-                    new WishlistItem(item.id, item.productId, new Date(item.addedAt))
+            const userId = this.userService.getUserId();
+            const response = await fetch(
+                `${this.API_BASE_URL}/wishlist/${userId}`
+            );
+            if (response.ok) {
+                const productsData = await response.json();
+                // Ensure products are loaded in ProductService first
+                await this.productsService.getAllProducts();
+                
+                // Convert plain objects to Product instances
+                this.wishlistProducts = productsData.map((productData: any) => 
+                    this.productsService.getProductById(productData.id)
                 );
+                
+                this.wishlistProducts.forEach((productData: Product) => {
+                    this.notifyListeners({
+                      type: "added",
+                      productId: productData.id,
+                    });
+                });
+            } else {
+                console.error(
+                    "Failed to load wishlist from API:",
+                    response.statusText
+                );
+                this.wishlistProducts = [];
             }
         } catch (error) {
-            console.error('Failed to load wishlist from storage:', error);
-            this.wishlistItems = [];
+            console.error("Failed to load wishlist from API:", error);
+            this.wishlistProducts = [];
         }
     }
 
     /**
-     * Save wishlist to localStorage
+     * Sync changes with backend API
      */
-    private saveToStorage(): void {
+    private async syncWithApi(
+        action: string,
+        product: Product | null = null
+    ): Promise<boolean> {
         try {
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.wishlistItems));
+            const userId = this.userService.getUserId();
+            let response: Response;
+
+            switch (action) {
+                case "add":
+                    if (!product) return false;
+                    response = await fetch(
+                        `${this.API_BASE_URL}/wishlist/${userId}/add`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(product),
+                        }
+                    );
+                    break;
+
+                case "remove":
+
+                    response = await fetch(
+                        `${this.API_BASE_URL}/wishlist/${userId}/remove`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(product),
+                        }
+                    );
+                    break;
+
+                case "clear":
+                    response = await fetch(
+                        `${this.API_BASE_URL}/wishlist/${userId}/clear`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        }
+                    );
+                    break;
+
+                default:
+                    return false;
+            }
+
+            return response.ok;
         } catch (error) {
-            console.error('Failed to save wishlist to storage:', error);
+            console.error(`Failed to sync ${action} with API:`, error);
+            return false;
         }
     }
 
     /**
      * Add a product to the wishlist
      */
-    public addToWishlist(productId: string): boolean {
+    public async addToWishlist(product: Product): Promise<boolean> {
         // Check if item already exists
-        if (this.isInWishlist(productId)) {
+        if (this.isInWishlist(product)) {
             return false;
         }
 
-        const newItem = new WishlistItem(
-            `wishlist-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            productId
-        );
+        const success = await this.syncWithApi("add", product);
+        if (success) {
+            this.wishlistProducts.push(product);
 
-        this.wishlistItems.push(newItem);
-        this.saveToStorage();
-        
-        this.notifyListeners({
-            type: 'added',
-            productId,
-            item: newItem
-        });
+            this.notifyListeners({
+                type: "added",
+                productId: product.id,
+            });
 
-        return true;
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Remove a product from the wishlist
      */
-    public removeFromWishlist(productId: string): boolean {
-        const initialLength = this.wishlistItems.length;
-        this.wishlistItems = this.wishlistItems.filter(item => item.productId !== productId);
-        
-        if (this.wishlistItems.length < initialLength) {
-            this.saveToStorage();
-            this.notifyListeners({
-                type: 'removed',
-                productId
-            });
-            return true;
+    public async removeFromWishlist(product: Product): Promise<boolean> {
+        const initialLength = this.wishlistProducts.length;
+
+        const success = await this.syncWithApi("remove", product);
+        if (success) {
+            this.wishlistProducts = this.wishlistProducts.filter(
+                (item) => item.id !== product.id
+            );
+
+            if (this.wishlistProducts.length < initialLength) {
+                this.notifyListeners({
+                    type: "removed",
+                    productId: product.id,
+                });
+                return true;
+            }
         }
-        
+
         return false;
     }
 
     /**
      * Check if a product is in the wishlist
      */
-    public isInWishlist(productId: string): boolean {
-        return this.wishlistItems.some(item => item.productId === productId);
+    public isInWishlist(product: Product): boolean {
+        return this.wishlistProducts.includes(product);
     }
 
     /**
-     * Get all wishlist items
+     * Get all wishlist product IDs
      */
-    public getWishlistItems(): WishlistItem[] {
-        return [...this.wishlistItems];
+    public getWishlistProductIds(): string[] {
+        return [...this.wishlistProducts.map((product) => product.id)];
     }
 
     /**
      * Get wishlist products with full product details
      */
     public getWishlistProducts(): Product[] {
-        const productService = ProductService.getInstance();
-        const products: Product[] = [];
-        
-        this.wishlistItems.forEach(item => {
-            const product = productService.getProductById(item.productId);
-            if (product) {
-                products.push(product);
-            }
-        });
-        
-        return products;
+        return this.wishlistProducts;
     }
 
     /**
      * Get wishlist count
      */
     public getWishlistCount(): number {
-        return this.wishlistItems.length;
+        return this.wishlistProducts.length;
+    }
+
+    /**
+     * Reload wishlist from backend API
+     */
+    public async reloadWishlist(): Promise<void> {
+        await this.loadFromApi();
     }
 
     /**
      * Clear entire wishlist
      */
-    public clearWishlist(): void {
-        this.wishlistItems = [];
-        this.saveToStorage();
-        this.notifyListeners({
-            type: 'cleared'
-        });
+    public async clearWishlist(): Promise<void> {
+        const success = await this.syncWithApi("clear");
+        if (success) {
+            this.wishlistProducts = [];
+            this.notifyListeners({
+                type: "cleared",
+            });
+        }
     }
 
     /**
      * Toggle product in wishlist (add if not present, remove if present)
      */
-    public toggleWishlist(productId: string): boolean {
-        if (this.isInWishlist(productId)) {
-            this.removeFromWishlist(productId);
+    public async toggleWishlist(product: Product): Promise<boolean> {
+        if (this.isInWishlist(product)) {
+            await this.removeFromWishlist(product);
             return false; // Removed
         } else {
-            this.addToWishlist(productId);
+            await this.addToWishlist(product);
             return true; // Added
         }
-    }
-
-    /**
-     * Move all wishlist items to cart (placeholder for future cart integration)
-     */
-    public moveAllToCart(): void {
-        // TODO: Implement cart integration
-        console.log('Moving all wishlist items to cart...');
-        // For now, just clear the wishlist
-        this.clearWishlist();
-    }
-
-    /**
-     * Get recently added items (within last 7 days)
-     */
-    public getRecentlyAddedItems(): WishlistItem[] {
-        return this.wishlistItems.filter(item => item.isRecentlyAdded());
     }
 }
